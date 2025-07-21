@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Clock, CheckCircle, AlertCircle, XCircle } from 'lucide-react';
+import { BackupItem } from '@/lib/api';
 
 interface ActivityItem {
   id: string;
@@ -12,54 +13,23 @@ interface ActivityItem {
 }
 
 interface RecentActivityProps {
-  activities?: ActivityItem[];
+  backupItems: BackupItem[];
 }
 
-const RecentActivity = ({ activities }: RecentActivityProps) => {
-  const defaultActivities: ActivityItem[] = [
-    {
-      id: '1',
-      type: 'backup',
-      message: 'Backup completed for vm-web-01',
-      timestamp: '2 minutes ago',
-      status: 'success',
-      source: 'vault-west-2'
-    },
-    {
-      id: '2',
-      type: 'alert',
-      message: 'Backup warning for vm-db-03 - policy mismatch',
-      timestamp: '15 minutes ago',
-      status: 'warning',
-      source: 'vault-east-1'
-    },
-    {
-      id: '3',
-      type: 'backup',
-      message: 'Backup failed for vm-app-05 - insufficient storage',
-      timestamp: '1 hour ago',
-      status: 'error',
-      source: 'vault-central-1'
-    },
-    {
-      id: '4',
-      type: 'restore',
-      message: 'Restore operation initiated for vm-web-01',
-      timestamp: '2 hours ago',
-      status: 'info',
-      source: 'vault-west-2'
-    },
-    {
-      id: '5',
-      type: 'backup',
-      message: 'Daily backup policy updated',
-      timestamp: '3 hours ago',
-      status: 'info',
-      source: 'System'
-    }
-  ];
-
-  const activityData = activities || defaultActivities;
+const RecentActivity = ({ backupItems }: RecentActivityProps) => {
+  // Convert backup items to activity format
+  const activityData: ActivityItem[] = backupItems
+    .sort((a, b) => new Date(b.latestRestorePoint).getTime() - new Date(a.latestRestorePoint).getTime())
+    .slice(0, 6)
+    .map((item, index) => ({
+      id: `${index + 1}`,
+      type: 'backup' as const,
+      message: `Backup ${item.lastBackupStatus.toLowerCase()} for ${item.vmName}`,
+      timestamp: new Date(item.latestRestorePoint).toLocaleString(),
+      status: item.lastBackupStatus === 'Completed' ? 'success' as const : 
+              item.lastBackupStatus === 'Failed' ? 'error' as const : 'warning' as const,
+      source: item.vaultName
+    }));
 
   const getStatusIcon = (status: string) => {
     switch (status) {

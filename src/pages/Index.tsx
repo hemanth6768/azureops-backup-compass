@@ -6,44 +6,102 @@ import VaultSummaryCards from '@/components/VaultSummaryCards';
 import FuturePanels from '@/components/FuturePanels';
 import RecentActivity from '@/components/RecentActivity';
 import { Database, Shield, Activity, AlertTriangle } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { api, RecoveryVault, BackupItem } from '@/lib/api';
+import { useToast } from '@/hooks/use-toast';
 import dashboardHero from '@/assets/dashboard-hero.png';
 
 const Index = () => {
   const [selectedSubscription, setSelectedSubscription] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [subscriptions, setSubscriptions] = useState<string[]>([]);
+  const [vaultData, setVaultData] = useState<RecoveryVault[]>([]);
+  const [backupItems, setBackupItems] = useState<BackupItem[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
 
-  // Mock data - replace with actual API calls
-  const subscriptions = ['Prod-Infra', 'Shared Services', 'DevOps', 'QA-Test'];
-  
-  const vaultData = [
-    {
-      name: "vault-east-1",
-      resourceGroupName: "rg-backup-east",
-      location: "East US",
-      subscriptionName: "Prod-Infra"
-    },
-    {
-      name: "vault-west-2", 
-      resourceGroupName: "rg-shared",
-      location: "West Europe",
-      subscriptionName: "Shared Services"
-    },
-    {
-      name: "vault-central-1",
-      resourceGroupName: "rg-central",
-      location: "Central US",
-      subscriptionName: "DevOps"
+  // Load initial data
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  // Filter backup items when subscription changes
+  useEffect(() => {
+    if (selectedSubscription !== 'all') {
+      loadBackupItemsBySubscription(selectedSubscription);
+    } else {
+      loadBackupItems();
     }
-  ];
+  }, [selectedSubscription]);
+
+  const loadData = async () => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const [subscriptionsData, vaultsData, backupItemsData] = await Promise.all([
+        api.getDistinctSubscriptions(),
+        api.getRecoveryVaults(),
+        api.getBackupItems()
+      ]);
+      
+      setSubscriptions(subscriptionsData);
+      setVaultData(vaultsData);
+      setBackupItems(backupItemsData);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load data';
+      setError(errorMessage);
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const loadBackupItems = async () => {
+    try {
+      const data = await api.getBackupItems();
+      setBackupItems(data);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load backup items';
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const loadBackupItemsBySubscription = async (subscription: string) => {
+    try {
+      const data = await api.getBackupItemsBySubscription(subscription);
+      setBackupItems(data);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load backup items for subscription';
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleRefresh = async () => {
-    setIsLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setIsLoading(false);
+    await loadData();
   };
+
+  // Calculate stats from real data
+  const totalVaults = vaultData.length;
+  const healthyBackups = backupItems.filter(item => item.lastBackupStatus === 'Completed').length;
+  const healthyPercentage = backupItems.length > 0 ? Math.round((healthyBackups / backupItems.length) * 100) : 0;
+  const activeVMs = backupItems.length;
+  const alertsCount = backupItems.filter(item => 
+    item.lastBackupStatus === 'Failed' || item.backupPreCheck !== 'Healthy'
+  ).length;
 
   return (
     <div className="min-h-screen bg-background">
@@ -84,33 +142,31 @@ const Index = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <StatCard
             title="Total Vaults"
-            value={vaultData.length}
+            value={totalVaults}
             description="Recovery Service Vaults"
             icon={Database}
             variant="default"
           />
           <StatCard
             title="Healthy Backups"
-            value="89%"
+            value={`${healthyPercentage}%`}
             description="All backup operations"
             icon={Shield}
-            variant="success"
-            trend="up"
-            trendValue="+2.3%"
+            variant={healthyPercentage >= 80 ? "success" : healthyPercentage >= 60 ? "warning" : "error"}
           />
           <StatCard
             title="Active VMs"
-            value="156"
+            value={activeVMs}
             description="With backup enabled"
             icon={Activity}
             variant="default"
           />
           <StatCard
             title="Alerts"
-            value="3"
+            value={alertsCount}
             description="Requiring attention"
             icon={AlertTriangle}
-            variant="warning"
+            variant={alertsCount === 0 ? "success" : alertsCount <= 5 ? "warning" : "error"}
           />
         </div>
 
@@ -124,12 +180,12 @@ const Index = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
           {/* Backup Health Chart */}
           <div className="lg:col-span-2">
-            <BackupHealthChart />
+            <BackupHealthChart backupItems={backupItems} />
           </div>
           
           {/* Recent Activity */}
           <div>
-            <RecentActivity />
+            <RecentActivity backupItems={backupItems} />
           </div>
         </div>
 

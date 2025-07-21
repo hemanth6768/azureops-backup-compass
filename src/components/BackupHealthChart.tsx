@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { Shield } from 'lucide-react';
+import { BackupItem } from '@/lib/api';
 
 interface HealthData {
   name: string;
@@ -9,17 +10,27 @@ interface HealthData {
 }
 
 interface BackupHealthChartProps {
-  data?: HealthData[];
+  backupItems: BackupItem[];
 }
 
-const BackupHealthChart = ({ data }: BackupHealthChartProps) => {
-  const defaultData: HealthData[] = [
-    { name: 'Healthy', value: 75, color: 'hsl(var(--success))' },
-    { name: 'Warning', value: 20, color: 'hsl(var(--warning))' },
-    { name: 'Failed', value: 5, color: 'hsl(var(--destructive))' }
-  ];
+const BackupHealthChart = ({ backupItems }: BackupHealthChartProps) => {
+  const healthyCount = backupItems.filter(item => 
+    item.lastBackupStatus === 'Completed' && item.backupPreCheck === 'Healthy'
+  ).length;
+  
+  const warningCount = backupItems.filter(item => 
+    item.lastBackupStatus === 'Completed' && item.backupPreCheck !== 'Healthy'
+  ).length;
+  
+  const failedCount = backupItems.filter(item => 
+    item.lastBackupStatus === 'Failed'
+  ).length;
 
-  const chartData = data || defaultData;
+  const chartData: HealthData[] = [
+    { name: 'Healthy', value: healthyCount, color: 'hsl(var(--success))' },
+    { name: 'Warning', value: warningCount, color: 'hsl(var(--warning))' },
+    { name: 'Failed', value: failedCount, color: 'hsl(var(--destructive))' }
+  ];
 
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
