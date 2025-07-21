@@ -29,7 +29,7 @@ export const api = {
   },
 
   async getBackupItems(): Promise<BackupItem[]> {
-    const response = await fetch(`${API_BASE_URL}/api/monitoring/backupitems`);
+    const response = await fetch(`${API_BASE_URL}/api/Monitoring/backup-items`);
     if (!response.ok) {
       throw new Error('Failed to fetch backup items');
     }
@@ -37,7 +37,7 @@ export const api = {
   },
 
   async getBackupItemsBySubscription(subscriptionName: string): Promise<BackupItem[]> {
-    const response = await fetch(`${API_BASE_URL}/api/monitoring/backupitems/by-subscription/${encodeURIComponent(subscriptionName)}`);
+    const response = await fetch(`${API_BASE_URL}/api/Monitoring/backup-items/subscription/${encodeURIComponent(subscriptionName)}`);
     if (!response.ok) {
       throw new Error(`Failed to fetch backup items for subscription: ${subscriptionName}`);
     }
@@ -45,7 +45,7 @@ export const api = {
   },
 
   async getDistinctSubscriptions(): Promise<string[]> {
-    const response = await fetch(`${API_BASE_URL}/api/monitoring/backupitems/subscriptions`);
+    const response = await fetch(`${API_BASE_URL}/api/Monitoring/backup-items/subscriptions`);
     if (!response.ok) {
       throw new Error('Failed to fetch subscriptions');
     }

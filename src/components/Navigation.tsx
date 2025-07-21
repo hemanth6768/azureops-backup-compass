@@ -30,16 +30,17 @@ const Navigation = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1">
             {navItems.map((item) => (
-              <Button
-                key={item.name}
-                variant={item.active ? "secondary" : "ghost"}
-                className={`text-white hover:bg-white/10 ${
-                  item.active ? 'bg-white/20 text-white' : 'text-white/90'
-                }`}
-              >
-                <item.icon className="w-4 h-4 mr-2" />
-                {item.name}
-              </Button>
+              <a key={item.name} href={item.href}>
+                <Button
+                  variant={item.active ? "secondary" : "ghost"}
+                  className={`text-white hover:bg-white/10 ${
+                    item.active ? 'bg-white/20 text-white' : 'text-white/90'
+                  }`}
+                >
+                  <item.icon className="w-4 h-4 mr-2" />
+                  {item.name}
+                </Button>
+              </a>
             ))}
           </div>
 
@@ -61,16 +62,17 @@ const Navigation = () => {
           <div className="md:hidden py-3 border-t border-white/20">
             <div className="flex flex-col space-y-2">
               {navItems.map((item) => (
-                <Button
-                  key={item.name}
-                  variant={item.active ? "secondary" : "ghost"}
-                  className={`justify-start text-white hover:bg-white/10 ${
-                    item.active ? 'bg-white/20 text-white' : 'text-white/90'
-                  }`}
-                >
-                  <item.icon className="w-4 h-4 mr-2" />
-                  {item.name}
-                </Button>
+                <a key={item.name} href={item.href}>
+                  <Button
+                    variant={item.active ? "secondary" : "ghost"}
+                    className={`justify-start text-white hover:bg-white/10 w-full ${
+                      item.active ? 'bg-white/20 text-white' : 'text-white/90'
+                    }`}
+                  >
+                    <item.icon className="w-4 h-4 mr-2" />
+                    {item.name}
+                  </Button>
+                </a>
               ))}
             </div>
           </div>
