@@ -1,4 +1,5 @@
-import Navigation from '@/components/Navigation';
+import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
+import { AppSidebar } from '@/components/AppSidebar';
 import { useState, useEffect } from 'react';
 import { api, BackupItem } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
@@ -8,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { RefreshCw, Search, Database, Download } from 'lucide-react';
+import { RefreshCw, Search, Database, Download, Cloud } from 'lucide-react';
 import { format } from 'date-fns';
 
 const BackupItems = () => {
@@ -166,10 +167,25 @@ const BackupItems = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-background">
+        <AppSidebar />
+        <SidebarInset className="flex-1">
+          {/* Header with sidebar trigger */}
+          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+            <SidebarTrigger className="-ml-1" />
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+                <Cloud className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h1 className="text-lg font-semibold">Backup Items</h1>
+                <p className="text-xs text-muted-foreground">Azure VM backup items management</p>
+              </div>
+            </div>
+          </header>
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="flex-1 space-y-4 p-4 md:p-6 lg:p-8">
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <Database className="h-8 w-8 text-primary" />
@@ -303,8 +319,10 @@ const BackupItems = () => {
             )}
           </CardContent>
         </Card>
-      </main>
-    </div>
+          </main>
+        </SidebarInset>
+      </div>
+    </SidebarProvider>
   );
 };
 

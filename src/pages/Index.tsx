@@ -1,4 +1,5 @@
-import Navigation from '@/components/Navigation';
+import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
+import { AppSidebar } from '@/components/AppSidebar';
 import StatCard from '@/components/StatCard';
 import FilterPanel from '@/components/FilterPanel';
 import VaultSummaryCards from '@/components/VaultSummaryCards';
@@ -61,10 +62,10 @@ const Index = () => {
       setSubscriptions(subscriptionsData);
       setVaultData(vaultsData);
       setStats({
-        totalVaults: vaultCountData.TotalVaults,
-        activeVMs: activeVMsData.ActiveVMs,
-        healthyBackupPercentage: healthyBackupData.HealthyBackupPercentage,
-        inactiveVMs: inactiveVMsData.InactiveVMs
+        totalVaults: vaultCountData.vaultCount || vaultCountData.TotalVaults || 0,
+        activeVMs: activeVMsData.activeVms || activeVMsData.ActiveVMs || 0,
+        healthyBackupPercentage: healthyBackupData.healthyBackups || healthyBackupData.HealthyBackupPercentage || '0%',
+        inactiveVMs: inactiveVMsData.inactiveVms || inactiveVMsData.InactiveVMs || 0
       });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load data';
@@ -91,81 +92,98 @@ const Index = () => {
   const healthyPercentage = parseFloat(stats.healthyBackupPercentage.replace('%', ''));
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
-      
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Hero Section */}
-        <div className="mb-8">
-          <div className="relative rounded-xl overflow-hidden bg-gradient-primary p-8 text-white">
-            <div className="absolute inset-0 opacity-10">
-              <img 
-                src={dashboardHero} 
-                alt="Dashboard Overview" 
-                className="w-full h-full object-cover"
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-background">
+        <AppSidebar />
+        <SidebarInset className="flex-1">
+          {/* Header with sidebar trigger */}
+          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+            <SidebarTrigger className="-ml-1" />
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+                <Database className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h1 className="text-lg font-semibold">AzureOps Monitor</h1>
+                <p className="text-xs text-muted-foreground">Centralized Azure Backup & Vault health</p>
+              </div>
+            </div>
+          </header>
+
+          <main className="flex-1 space-y-4 p-4 md:p-6 lg:p-8">
+            {/* Hero Section */}
+            <div className="mb-8">
+              <div className="relative rounded-xl overflow-hidden bg-gradient-primary p-8 text-white">
+                <div className="absolute inset-0 opacity-10">
+                  <img 
+                    src={dashboardHero} 
+                    alt="Dashboard Overview" 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="relative z-10">
+                  <h1 className="text-4xl font-bold mb-2">Dashboard</h1>
+                  <p className="text-xl text-white/90">
+                    Centralized view for Azure Backup & Vault health across all subscriptions
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Filter Panel */}
+            <div className="mb-8">
+              <FilterPanel
+                subscriptions={subscriptions}
+                onSubscriptionChange={setSelectedSubscription}
+                onSearchChange={setSearchTerm}
+                onRefresh={handleRefresh}
+                isLoading={isLoading}
               />
             </div>
-            <div className="relative z-10">
-              <h1 className="text-4xl font-bold mb-2">AzureOps Monitor Dashboard</h1>
-              <p className="text-xl text-white/90">
-                Centralized view for Azure Backup & Vault health across all subscriptions
-              </p>
+
+            {/* Quick Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <StatCard
+                title="Total Vaults"
+                value={stats.totalVaults}
+                description="Recovery Service Vaults"
+                icon={Database}
+                variant="default"
+              />
+              <StatCard
+                title="Healthy Backups"
+                value={stats.healthyBackupPercentage}
+                description="All backup operations"
+                icon={Shield}
+                variant={healthyPercentage >= 80 ? "success" : healthyPercentage >= 60 ? "warning" : "error"}
+              />
+              <StatCard
+                title="Active VMs"
+                value={stats.activeVMs}
+                description="With backup enabled"
+                icon={Activity}
+                variant="default"
+              />
+              <StatCard
+                title="Inactive VMs"
+                value={stats.inactiveVMs}
+                description="Requiring attention"
+                icon={AlertTriangle}
+                variant={stats.inactiveVMs === 0 ? "success" : stats.inactiveVMs <= 5 ? "warning" : "error"}
+                onClick={handleInactiveVMsClick}
+                clickable={true}
+              />
             </div>
-          </div>
-        </div>
 
-        {/* Filter Panel */}
-        <div className="mb-8">
-          <FilterPanel
-            subscriptions={subscriptions}
-            onSubscriptionChange={setSelectedSubscription}
-            onSearchChange={setSearchTerm}
-            onRefresh={handleRefresh}
-            isLoading={isLoading}
-          />
-        </div>
-
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <StatCard
-            title="Total Vaults"
-            value={stats.totalVaults}
-            description="Recovery Service Vaults"
-            icon={Database}
-            variant="default"
-          />
-          <StatCard
-            title="Healthy Backups"
-            value={stats.healthyBackupPercentage}
-            description="All backup operations"
-            icon={Shield}
-            variant={healthyPercentage >= 80 ? "success" : healthyPercentage >= 60 ? "warning" : "error"}
-          />
-          <StatCard
-            title="Active VMs"
-            value={stats.activeVMs}
-            description="With backup enabled"
-            icon={Activity}
-            variant="default"
-          />
-          <StatCard
-            title="Inactive VMs"
-            value={stats.inactiveVMs}
-            description="Requiring attention"
-            icon={AlertTriangle}
-            variant={stats.inactiveVMs === 0 ? "success" : stats.inactiveVMs <= 5 ? "warning" : "error"}
-            onClick={handleInactiveVMsClick}
-            clickable={true}
-          />
-        </div>
-
-        {/* Vault Summary Cards */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-foreground mb-6">Vault Overview</h2>
-          <VaultSummaryCards vaults={vaultData} />
-        </div>
-      </main>
-    </div>
+            {/* Vault Summary Cards */}
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-foreground mb-6">Vault Overview</h2>
+              <VaultSummaryCards vaults={vaultData} />
+            </div>
+          </main>
+        </SidebarInset>
+      </div>
+    </SidebarProvider>
   );
 };
 

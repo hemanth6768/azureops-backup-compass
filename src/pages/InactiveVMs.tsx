@@ -4,11 +4,12 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Search, Download, ArrowLeft } from 'lucide-react';
+import { Search, Download, ArrowLeft, AlertTriangle } from 'lucide-react';
 import { api, BackupItem } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
-import Navigation from '@/components/Navigation';
+import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
+import { AppSidebar } from '@/components/AppSidebar';
 
 const InactiveVMs = () => {
   const [inactiveVMs, setInactiveVMs] = useState<BackupItem[]>([]);
@@ -107,10 +108,25 @@ const InactiveVMs = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-background">
+        <AppSidebar />
+        <SidebarInset className="flex-1">
+          {/* Header with sidebar trigger */}
+          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+            <SidebarTrigger className="-ml-1" />
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+                <AlertTriangle className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h1 className="text-lg font-semibold">Inactive VMs</h1>
+                <p className="text-xs text-muted-foreground">VMs requiring backup attention</p>
+              </div>
+            </div>
+          </header>
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="flex-1 space-y-4 p-4 md:p-6 lg:p-8">
         <div className="mb-6 flex items-center">
           <Button 
             variant="ghost" 
@@ -200,8 +216,10 @@ const InactiveVMs = () => {
             )}
           </CardContent>
         </Card>
-      </main>
-    </div>
+          </main>
+        </SidebarInset>
+      </div>
+    </SidebarProvider>
   );
 };
 

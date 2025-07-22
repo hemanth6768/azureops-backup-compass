@@ -1,5 +1,26 @@
 const API_BASE_URL = 'http://localhost:33411';
 
+// Stats interfaces
+interface VaultCountResponse {
+  vaultCount?: number;
+  TotalVaults?: number;
+}
+
+interface ActiveVMsResponse {
+  activeVms?: number;
+  ActiveVMs?: number;
+}
+
+interface HealthyBackupResponse {
+  healthyBackups?: string;
+  HealthyBackupPercentage?: string;
+}
+
+interface InactiveVMsResponse {
+  inactiveVms?: number;
+  InactiveVMs?: number;
+}
+
 export interface RecoveryVault {
   vaultName: string;
   resourceGroupName: string;
@@ -38,7 +59,7 @@ export const api = {
     return response.json();
   },
 
-  async getVaultCount(subscriptionName?: string): Promise<{ TotalVaults: number }> {
+  async getVaultCount(subscriptionName?: string): Promise<VaultCountResponse> {
     const url = subscriptionName 
       ? `${API_BASE_URL}/api/monitoring/vaultcount?subscriptionName=${encodeURIComponent(subscriptionName)}`
       : `${API_BASE_URL}/api/monitoring/vaultcount`;
@@ -49,7 +70,7 @@ export const api = {
     return response.json();
   },
 
-  async getActiveVMsCount(subscriptionName?: string): Promise<{ ActiveVMs: number }> {
+  async getActiveVMsCount(subscriptionName?: string): Promise<ActiveVMsResponse> {
     const url = subscriptionName 
       ? `${API_BASE_URL}/api/monitoring/activevms?subscriptionName=${encodeURIComponent(subscriptionName)}`
       : `${API_BASE_URL}/api/monitoring/activevms`;
@@ -60,7 +81,7 @@ export const api = {
     return response.json();
   },
 
-  async getHealthyBackupPercentage(subscriptionName?: string): Promise<{ HealthyBackupPercentage: string }> {
+  async getHealthyBackupPercentage(subscriptionName?: string): Promise<HealthyBackupResponse> {
     const url = subscriptionName 
       ? `${API_BASE_URL}/api/monitoring/healthybackups?subscriptionName=${encodeURIComponent(subscriptionName)}`
       : `${API_BASE_URL}/api/monitoring/healthybackups`;
@@ -71,7 +92,7 @@ export const api = {
     return response.json();
   },
 
-  async getInactiveVMsCount(subscriptionName?: string): Promise<{ InactiveVMs: number }> {
+  async getInactiveVMsCount(subscriptionName?: string): Promise<InactiveVMsResponse> {
     const url = subscriptionName 
       ? `${API_BASE_URL}/api/monitoring/inactivevms?subscriptionName=${encodeURIComponent(subscriptionName)}`
       : `${API_BASE_URL}/api/monitoring/inactivevms`;
