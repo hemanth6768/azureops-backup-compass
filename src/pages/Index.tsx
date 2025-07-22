@@ -1,14 +1,12 @@
 import Navigation from '@/components/Navigation';
 import StatCard from '@/components/StatCard';
 import FilterPanel from '@/components/FilterPanel';
-import BackupHealthChart from '@/components/BackupHealthChart';
 import VaultSummaryCards from '@/components/VaultSummaryCards';
-import FuturePanels from '@/components/FuturePanels';
-import RecentActivity from '@/components/RecentActivity';
 import { Database, Shield, Activity, AlertTriangle } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { api, RecoveryVault, BackupItem } from '@/lib/api';
+import { api, RecoveryVault } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 import dashboardHero from '@/assets/dashboard-hero.png';
 
 const Index = () => {
@@ -17,22 +15,24 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [subscriptions, setSubscriptions] = useState<string[]>([]);
   const [vaultData, setVaultData] = useState<RecoveryVault[]>([]);
-  const [backupItems, setBackupItems] = useState<BackupItem[]>([]);
+  const [stats, setStats] = useState({
+    totalVaults: 0,
+    activeVMs: 0,
+    healthyBackupPercentage: '0%',
+    inactiveVMs: 0
+  });
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   // Load initial data
   useEffect(() => {
     loadData();
   }, []);
 
-  // Filter backup items when subscription changes
+  // Reload data when subscription changes
   useEffect(() => {
-    if (selectedSubscription !== 'all') {
-      loadBackupItemsBySubscription(selectedSubscription);
-    } else {
-      loadBackupItems();
-    }
+    loadData();
   }, [selectedSubscription]);
 
   const loadData = async () => {
@@ -40,15 +40,32 @@ const Index = () => {
     setError(null);
     
     try {
-      const [subscriptionsData, vaultsData, backupItemsData] = await Promise.all([
+      const subscriptionParam = selectedSubscription !== 'all' ? selectedSubscription : undefined;
+      
+      const [
+        subscriptionsData, 
+        vaultsData, 
+        vaultCountData, 
+        activeVMsData, 
+        healthyBackupData, 
+        inactiveVMsData
+      ] = await Promise.all([
         api.getDistinctSubscriptions(),
-        api.getRecoveryVaults(),
-        api.getBackupItems()
+        api.getRecoveryVaults(subscriptionParam),
+        api.getVaultCount(subscriptionParam),
+        api.getActiveVMsCount(subscriptionParam),
+        api.getHealthyBackupPercentage(subscriptionParam),
+        api.getInactiveVMsCount(subscriptionParam)
       ]);
       
       setSubscriptions(subscriptionsData);
       setVaultData(vaultsData);
-      setBackupItems(backupItemsData);
+      setStats({
+        totalVaults: vaultCountData.TotalVaults,
+        activeVMs: activeVMsData.ActiveVMs,
+        healthyBackupPercentage: healthyBackupData.HealthyBackupPercentage,
+        inactiveVMs: inactiveVMsData.InactiveVMs
+      });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load data';
       setError(errorMessage);
@@ -62,46 +79,16 @@ const Index = () => {
     }
   };
 
-  const loadBackupItems = async () => {
-    try {
-      const data = await api.getBackupItems();
-      setBackupItems(data);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load backup items';
-      toast({
-        title: "Error",
-        description: errorMessage,
-        variant: "destructive",
-      });
-    }
-  };
-
-  const loadBackupItemsBySubscription = async (subscription: string) => {
-    try {
-      const data = await api.getBackupItemsBySubscription(subscription);
-      setBackupItems(data);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load backup items for subscription';
-      toast({
-        title: "Error",
-        description: errorMessage,
-        variant: "destructive",
-      });
-    }
-  };
-
   const handleRefresh = async () => {
     await loadData();
   };
 
-  // Calculate stats from real data
-  const totalVaults = vaultData.length;
-  const healthyBackups = backupItems.filter(item => item.lastBackupStatus === 'Completed').length;
-  const healthyPercentage = backupItems.length > 0 ? Math.round((healthyBackups / backupItems.length) * 100) : 0;
-  const activeVMs = backupItems.length;
-  const alertsCount = backupItems.filter(item => 
-    item.lastBackupStatus === 'Failed' || item.backupPreCheck !== 'Healthy'
-  ).length;
+  const handleInactiveVMsClick = () => {
+    navigate('/inactive-vms');
+  };
+
+  // Parse percentage for variant calculation
+  const healthyPercentage = parseFloat(stats.healthyBackupPercentage.replace('%', ''));
 
   return (
     <div className="min-h-screen bg-background">
@@ -142,31 +129,33 @@ const Index = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <StatCard
             title="Total Vaults"
-            value={totalVaults}
+            value={stats.totalVaults}
             description="Recovery Service Vaults"
             icon={Database}
             variant="default"
           />
           <StatCard
             title="Healthy Backups"
-            value={`${healthyPercentage}%`}
+            value={stats.healthyBackupPercentage}
             description="All backup operations"
             icon={Shield}
             variant={healthyPercentage >= 80 ? "success" : healthyPercentage >= 60 ? "warning" : "error"}
           />
           <StatCard
             title="Active VMs"
-            value={activeVMs}
+            value={stats.activeVMs}
             description="With backup enabled"
             icon={Activity}
             variant="default"
           />
           <StatCard
-            title="Alerts"
-            value={alertsCount}
+            title="Inactive VMs"
+            value={stats.inactiveVMs}
             description="Requiring attention"
             icon={AlertTriangle}
-            variant={alertsCount === 0 ? "success" : alertsCount <= 5 ? "warning" : "error"}
+            variant={stats.inactiveVMs === 0 ? "success" : stats.inactiveVMs <= 5 ? "warning" : "error"}
+            onClick={handleInactiveVMsClick}
+            clickable={true}
           />
         </div>
 
@@ -174,24 +163,6 @@ const Index = () => {
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-foreground mb-6">Vault Overview</h2>
           <VaultSummaryCards vaults={vaultData} />
-        </div>
-
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-          {/* Backup Health Chart */}
-          <div className="lg:col-span-2">
-            <BackupHealthChart backupItems={backupItems} />
-          </div>
-          
-          {/* Recent Activity */}
-          <div>
-            <RecentActivity backupItems={backupItems} />
-          </div>
-        </div>
-
-        {/* Future Panels */}
-        <div className="mb-8">
-          <FuturePanels />
         </div>
       </main>
     </div>

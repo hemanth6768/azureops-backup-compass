@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Database, MapPin, Users, Activity } from 'lucide-react';
 
 interface VaultData {
-  name: string;
+  vaultName: string;
   resourceGroupName: string;
   location: string;
   subscriptionName: string;

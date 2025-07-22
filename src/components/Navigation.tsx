@@ -7,9 +7,8 @@ const Navigation = () => {
 
   const navItems = [
     { name: 'Dashboard', icon: BarChart3, href: '/', active: true },
-    { name: 'Recovery Vaults', icon: Database, href: '/vaults', active: false },
+    { name: 'Recovery Vaults', icon: Database, href: '/recovery-vaults', active: false },
     { name: 'Backup Items', icon: Cloud, href: '/backup-items', active: false },
-    { name: 'Settings', icon: Settings, href: '/settings', active: false },
   ];
 
   return (

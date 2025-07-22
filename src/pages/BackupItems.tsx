@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { RefreshCw, Search, Database } from 'lucide-react';
+import { RefreshCw, Search, Database, Download } from 'lucide-react';
 import { format } from 'date-fns';
 
 const BackupItems = () => {
@@ -128,6 +128,43 @@ const BackupItems = () => {
     }
   };
 
+  const exportToCSV = () => {
+    const headers = [
+      'VM Name',
+      'Vault Name', 
+      'Resource Group',
+      'Subscription',
+      'Backup Pre-Check',
+      'Last Backup Status',
+      'Latest Restore Point',
+      'Policy Name',
+      'Policy Sub Type'
+    ];
+
+    const csvContent = [
+      headers.join(','),
+      ...filteredItems.map(item => [
+        item.vmName,
+        item.vaultName,
+        item.resourceGroup,
+        item.subscriptionName,
+        item.backupPreCheck,
+        item.lastBackupStatus,
+        item.latestRestorePoint,
+        item.policyName,
+        item.policySubType
+      ].join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'backup-items.csv';
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
@@ -183,7 +220,7 @@ const BackupItems = () => {
                 </div>
               </div>
               
-              <div className="flex items-end">
+              <div className="flex items-end gap-2">
                 <Button 
                   onClick={loadData} 
                   disabled={isLoading}
@@ -192,6 +229,16 @@ const BackupItems = () => {
                 >
                   <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
                   Refresh
+                </Button>
+                
+                <Button 
+                  onClick={exportToCSV}
+                  disabled={filteredItems.length === 0}
+                  variant="outline"
+                  className="h-10"
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  Export CSV
                 </Button>
               </div>
             </div>

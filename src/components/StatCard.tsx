@@ -10,6 +10,8 @@ interface StatCardProps {
   trend?: 'up' | 'down' | 'stable';
   trendValue?: string;
   variant?: 'default' | 'success' | 'warning' | 'error';
+  onClick?: () => void;
+  clickable?: boolean;
 }
 
 const StatCard = ({ 
@@ -19,7 +21,9 @@ const StatCard = ({
   icon: Icon, 
   trend, 
   trendValue,
-  variant = 'default'
+  variant = 'default',
+  onClick,
+  clickable = false
 }: StatCardProps) => {
   const getGradient = () => {
     switch (variant) {
@@ -39,7 +43,12 @@ const StatCard = ({
   };
 
   return (
-    <Card className="bg-gradient-card shadow-card hover:shadow-hover transition-all duration-300 animate-fade-in">
+    <Card 
+      className={`bg-gradient-card shadow-card hover:shadow-hover transition-all duration-300 animate-fade-in ${
+        clickable ? 'cursor-pointer hover:scale-105' : ''
+      }`}
+      onClick={clickable ? onClick : undefined}
+    >
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div className="flex-1">
