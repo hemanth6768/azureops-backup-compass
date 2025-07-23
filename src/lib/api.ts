@@ -47,7 +47,26 @@ export interface BackupItem {
   policySubType: string;
 }
 
+interface VaultSummaryResponse {
+  totalResourceGroups: number;
+  locationStats: Array<{
+    location: string;
+    vaultCount: number;
+  }>;
+}
+
 export const api = {
+  async getVaultSummary(subscriptionName?: string): Promise<VaultSummaryResponse> {
+    const url = subscriptionName 
+      ? `${API_BASE_URL}/api/Monitoring/vaultsummary?subscriptionName=${encodeURIComponent(subscriptionName)}`
+      : `${API_BASE_URL}/api/Monitoring/vaultsummary`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error('Failed to fetch vault summary');
+    }
+    return response.json();
+  },
+
   async getRecoveryVaults(subscriptionName?: string): Promise<RecoveryVault[]> {
     const url = subscriptionName 
       ? `${API_BASE_URL}/api/monitoring/recoveryvaults?subscriptionName=${encodeURIComponent(subscriptionName)}`

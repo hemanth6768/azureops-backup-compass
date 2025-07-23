@@ -9,22 +9,33 @@ interface VaultData {
   subscriptionName: string;
 }
 
-interface VaultSummaryCardsProps {
-  vaults: VaultData[];
+interface VaultSummaryData {
+  totalResourceGroups: number;
+  locationStats: Array<{
+    location: string;
+    vaultCount: number;
+  }>;
 }
 
-const VaultSummaryCards = ({ vaults }: VaultSummaryCardsProps) => {
-  // Group vaults by location
-  const vaultsByLocation = vaults.reduce((acc, vault) => {
-    acc[vault.location] = (acc[vault.location] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+interface VaultSummaryCardsProps {
+  vaults: VaultData[];
+  vaultSummary?: VaultSummaryData;
+}
+
+const VaultSummaryCards = ({ vaults, vaultSummary }: VaultSummaryCardsProps) => {
+  // Use API data if available, otherwise fallback to calculated values
+  const locationStats = vaultSummary?.locationStats || 
+    Object.entries(vaults.reduce((acc, vault) => {
+      acc[vault.location] = (acc[vault.location] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>)).map(([location, vaultCount]) => ({ location, vaultCount }));
 
   // Get unique subscriptions
   const uniqueSubscriptions = new Set(vaults.map(v => v.subscriptionName)).size;
   
-  // Get unique resource groups
-  const uniqueResourceGroups = new Set(vaults.map(v => v.resourceGroupName)).size;
+  // Get unique resource groups - use API data if available
+  const uniqueResourceGroups = vaultSummary?.totalResourceGroups || 
+    new Set(vaults.map(v => v.resourceGroupName)).size;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -83,11 +94,11 @@ const VaultSummaryCards = ({ vaults }: VaultSummaryCardsProps) => {
         </CardHeader>
         <CardContent className="pt-0">
           <div className="space-y-2 max-h-20 overflow-y-auto">
-            {Object.entries(vaultsByLocation).map(([location, count]) => (
+            {locationStats.map(({ location, vaultCount }) => (
               <div key={location} className="flex items-center justify-between">
                 <span className="text-sm text-foreground truncate">{location}</span>
                 <Badge variant="secondary" className="text-xs">
-                  {count}
+                  {vaultCount}
                 </Badge>
               </div>
             ))}

@@ -16,6 +16,7 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [subscriptions, setSubscriptions] = useState<string[]>([]);
   const [vaultData, setVaultData] = useState<RecoveryVault[]>([]);
+  const [vaultSummary, setVaultSummary] = useState<any>(null);
   const [stats, setStats] = useState({
     totalVaults: 0,
     activeVMs: 0,
@@ -46,6 +47,7 @@ const Index = () => {
       const [
         subscriptionsData, 
         vaultsData, 
+        vaultSummaryData,
         vaultCountData, 
         activeVMsData, 
         healthyBackupData, 
@@ -53,6 +55,7 @@ const Index = () => {
       ] = await Promise.all([
         api.getDistinctSubscriptions(),
         api.getRecoveryVaults(subscriptionParam),
+        api.getVaultSummary(subscriptionParam),
         api.getVaultCount(subscriptionParam),
         api.getActiveVMsCount(subscriptionParam),
         api.getHealthyBackupPercentage(subscriptionParam),
@@ -61,6 +64,7 @@ const Index = () => {
       
       setSubscriptions(subscriptionsData);
       setVaultData(vaultsData);
+      setVaultSummary(vaultSummaryData);
       setStats({
         totalVaults: vaultCountData.vaultCount || vaultCountData.TotalVaults || 0,
         activeVMs: activeVMsData.activeVms || activeVMsData.ActiveVMs || 0,
@@ -130,6 +134,12 @@ const Index = () => {
               </div>
             </div>
 
+            {/* Vault Summary Cards */}
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-foreground mb-6">Vault Overview</h2>
+              <VaultSummaryCards vaults={vaultData} vaultSummary={vaultSummary} />
+            </div>
+
             {/* Filter Panel */}
             <div className="mb-8">
               <FilterPanel
@@ -173,12 +183,6 @@ const Index = () => {
                 onClick={handleInactiveVMsClick}
                 clickable={true}
               />
-            </div>
-
-            {/* Vault Summary Cards */}
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-foreground mb-6">Vault Overview</h2>
-              <VaultSummaryCards vaults={vaultData} />
             </div>
           </main>
         </SidebarInset>
