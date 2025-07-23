@@ -23,9 +23,7 @@ const RecoveryVaults = () => {
     loadData();
   }, []);
 
-  useEffect(() => {
-    loadVaults();
-  }, [selectedSubscription]);
+  // Remove this useEffect since we're filtering on frontend now
 
   useEffect(() => {
     filterVaults();
@@ -49,8 +47,8 @@ const RecoveryVaults = () => {
   const loadVaults = async () => {
     setIsLoading(true);
     try {
-      const subscriptionParam = selectedSubscription !== 'all' ? selectedSubscription : undefined;
-      const data = await api.getRecoveryVaults(subscriptionParam);
+      // Always load all vaults and filter on frontend
+      const data = await api.getRecoveryVaults();
       setVaults(data);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load recovery vaults';
@@ -65,12 +63,23 @@ const RecoveryVaults = () => {
   };
 
   const filterVaults = () => {
-    const filtered = vaults.filter(vault => 
+    let filtered = vaults;
+    
+    // Filter by subscription if not "all"
+    if (selectedSubscription !== 'all') {
+      filtered = filtered.filter(vault => 
+        vault.subscriptionName === selectedSubscription
+      );
+    }
+    
+    // Filter by search term
+    filtered = filtered.filter(vault => 
       vault.vaultName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       vault.subscriptionName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       vault.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
       vault.resourceGroupName.toLowerCase().includes(searchTerm.toLowerCase())
     );
+    
     setFilteredVaults(filtered);
   };
 

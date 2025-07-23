@@ -122,8 +122,11 @@ export const api = {
     return response.json();
   },
 
-  async getInactiveVMDetails(): Promise<BackupItem[]> {
-    const response = await fetch(`${API_BASE_URL}/api/Monitoring/inactivevm/details`);
+  async getInactiveVMDetails(subscriptionName?: string): Promise<BackupItem[]> {
+    const url = subscriptionName 
+      ? `${API_BASE_URL}/api/Monitoring/inactivevm/details?subscriptionName=${encodeURIComponent(subscriptionName)}`
+      : `${API_BASE_URL}/api/Monitoring/inactivevm/details`;
+    const response = await fetch(url);
     if (!response.ok) {
       throw new Error('Failed to fetch inactive VM details');
     }
