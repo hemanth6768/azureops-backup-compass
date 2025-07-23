@@ -142,13 +142,14 @@ const Index = () => {
 
             {/* Filter Panel */}
             <div className="mb-8">
-              <FilterPanel
-                subscriptions={subscriptions}
-                onSubscriptionChange={setSelectedSubscription}
-                onSearchChange={setSearchTerm}
-                onRefresh={handleRefresh}
-                isLoading={isLoading}
-              />
+            <FilterPanel
+              subscriptions={subscriptions}
+              selectedSubscription={selectedSubscription}
+              onSubscriptionChange={setSelectedSubscription}
+              onSearchChange={setSearchTerm}
+              onRefresh={handleRefresh}
+              isLoading={isLoading}
+            />
             </div>
 
             {/* Quick Stats */}

@@ -6,6 +6,7 @@ import { Search, Filter, RefreshCw } from 'lucide-react';
 
 interface FilterPanelProps {
   subscriptions: string[];
+  selectedSubscription: string;
   onSubscriptionChange: (subscription: string) => void;
   onSearchChange: (search: string) => void;
   onRefresh: () => void;
@@ -14,6 +15,7 @@ interface FilterPanelProps {
 
 const FilterPanel = ({ 
   subscriptions, 
+  selectedSubscription,
   onSubscriptionChange, 
   onSearchChange, 
   onRefresh,
@@ -32,7 +34,7 @@ const FilterPanel = ({
           {/* Subscription Filter */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">Subscription</label>
-            <Select onValueChange={onSubscriptionChange}>
+            <Select value={selectedSubscription} onValueChange={onSubscriptionChange}>
               <SelectTrigger className="bg-background">
                 <SelectValue placeholder="All Subscriptions" />
               </SelectTrigger>
