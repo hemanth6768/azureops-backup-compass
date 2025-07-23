@@ -29,7 +29,7 @@ const RecoveryVaults = () => {
 
   useEffect(() => {
     filterVaults();
-  }, [searchTerm, vaults]);
+  }, [searchTerm, vaults, selectedSubscription]);
 
   const loadData = async () => {
     try {
