@@ -51,6 +51,13 @@ export interface BackupItem {
   policySubType: string;
 }
 
+export interface VMUsage {
+  computer: string;
+  maxCPUUsage: number;
+  subscriptionName: string;
+  timeGenerated: string;
+}
+
 interface VaultSummaryResponse {
   totalResourceGroups: number;
   locationStats: Array<{
@@ -157,6 +164,22 @@ export const api = {
     const response = await fetch(`${API_BASE_URL}/api/Monitoring/backup-items/subscriptions`);
     if (!response.ok) {
       throw new Error('Failed to fetch subscriptions');
+    }
+    return response.json();
+  },
+
+  async getVMUsages(): Promise<VMUsage[]> {
+    const response = await fetch(`${API_BASE_URL}/api/Monitoring/VMusages`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch VM usages');
+    }
+    return response.json();
+  },
+
+  async getVMUsagesBySubscription(subscriptionName: string): Promise<VMUsage[]> {
+    const response = await fetch(`${API_BASE_URL}/api/Monitoring/VMusages/${encodeURIComponent(subscriptionName)}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch VM usages for subscription: ${subscriptionName}`);
     }
     return response.json();
   },
