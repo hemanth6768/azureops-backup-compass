@@ -2,21 +2,25 @@ const API_BASE_URL = 'http://localhost:33411';
 
 // Stats interfaces
 interface VaultCountResponse {
+  totalVaults?: number;
   vaultCount?: number;
   TotalVaults?: number;
 }
 
 interface ActiveVMsResponse {
+  activeVMs?: number;
   activeVms?: number;
   ActiveVMs?: number;
 }
 
 interface HealthyBackupResponse {
+  healthyBackupPercentage?: string;
   healthyBackups?: string;
   HealthyBackupPercentage?: string;
 }
 
 interface InactiveVMsResponse {
+  inactiveVMs?: number;
   inactiveVms?: number;
   InactiveVMs?: number;
 }

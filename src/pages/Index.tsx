@@ -66,10 +66,10 @@ const Index = () => {
       setVaultData(vaultsData);
       setVaultSummary(vaultSummaryData);
       setStats({
-        totalVaults: vaultCountData.vaultCount || vaultCountData.TotalVaults || vaultsData.length || 0,
-        activeVMs: activeVMsData.activeVms || activeVMsData.ActiveVMs || 0,
-        healthyBackupPercentage: healthyBackupData.healthyBackups || healthyBackupData.HealthyBackupPercentage || '0%',
-        inactiveVMs: inactiveVMsData.inactiveVms || inactiveVMsData.InactiveVMs || 0
+        totalVaults: vaultCountData.totalVaults || vaultCountData.vaultCount || vaultCountData.TotalVaults || vaultsData.length || 0,
+        activeVMs: activeVMsData.activeVMs || activeVMsData.activeVms || activeVMsData.ActiveVMs || 0,
+        healthyBackupPercentage: healthyBackupData.healthyBackupPercentage || healthyBackupData.healthyBackups || healthyBackupData.HealthyBackupPercentage || '0%',
+        inactiveVMs: inactiveVMsData.inactiveVMs || inactiveVMsData.inactiveVms || inactiveVMsData.InactiveVMs || 0
       });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load data';
