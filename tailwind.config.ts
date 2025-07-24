@@ -69,7 +69,14 @@ export default {
 					accent: 'hsl(var(--sidebar-accent))',
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
+					ring: 'hsl(var(--sidebar-ring))',
+					hover: 'hsl(var(--sidebar-hover))'
+				},
+				table: {
+					header: 'hsl(var(--table-header))',
+					'header-foreground': 'hsl(var(--table-header-foreground))',
+					'row-hover': 'hsl(var(--table-row-hover))',
+					border: 'hsl(var(--table-border))'
 				}
 			},
 			borderRadius: {
@@ -87,7 +94,10 @@ export default {
 			boxShadow: {
 				'card': 'var(--shadow-card)',
 				'hover': 'var(--shadow-hover)',
-				'focus': 'var(--shadow-focus)'
+				'focus': 'var(--shadow-focus)',
+				'sidebar': 'var(--shadow-sidebar)',
+				'table': 'var(--shadow-table)',
+				'elevated': 'var(--shadow-elevated)'
 			},
 			keyframes: {
 				'accordion-down': {

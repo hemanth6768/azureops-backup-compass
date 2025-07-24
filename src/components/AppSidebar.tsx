@@ -28,18 +28,47 @@ export function AppSidebar() {
   const isExpanded = items.some((i) => isActive(i.url));
 
   return (
-    <Sidebar className={state === 'collapsed' ? 'w-14' : 'w-60'} collapsible="icon">
-      <SidebarContent>
+    <Sidebar 
+      className={`sidebar-enhanced transition-all duration-300 ${
+        state === 'collapsed' ? 'w-16' : 'w-64'
+      }`} 
+      collapsible="icon"
+    >
+      <SidebarContent className="p-2">
         <SidebarGroup>
-          <SidebarGroupLabel>AzureOps Monitor</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
+          <SidebarGroupLabel className="px-4 py-3 text-sm font-semibold text-sidebar-foreground/80 tracking-wider uppercase">
+            {state === 'collapsed' ? 'AOM' : 'AzureOps Monitor'}
+          </SidebarGroupLabel>
+          <SidebarGroupContent className="mt-2">
+            <SidebarMenu className="space-y-1">
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={isActive(item.url)}>
-                    <NavLink to={item.url} end>
-                      <item.icon className="h-4 w-4" />
-                      {state !== 'collapsed' && <span>{item.title}</span>}
+                  <SidebarMenuButton 
+                    asChild 
+                    isActive={isActive(item.url)}
+                    className={`sidebar-nav-item ${
+                      isActive(item.url) ? 'active' : ''
+                    } group px-4 py-3 text-sm font-medium`}
+                  >
+                    <NavLink 
+                      to={item.url} 
+                      end
+                      className="flex items-center gap-3 w-full transition-colors duration-200"
+                    >
+                      <item.icon className={`h-5 w-5 flex-shrink-0 transition-all duration-200 ${
+                        isActive(item.url) 
+                          ? 'text-primary-foreground' 
+                          : 'text-sidebar-foreground group-hover:text-primary'
+                      }`} />
+                      {state !== 'collapsed' && (
+                        <span className={`transition-colors duration-200 ${
+                          isActive(item.url) 
+                            ? 'text-primary-foreground font-semibold' 
+                            : 'text-sidebar-foreground group-hover:text-primary'
+                        }`}>
+                          {item.title}
+                        </span>
+                      )}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -47,6 +76,16 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        
+        {/* Modern footer branding */}
+        {state !== 'collapsed' && (
+          <div className="mt-auto p-4 border-t border-sidebar-border/50">
+            <div className="flex items-center gap-2 text-xs text-sidebar-foreground/60">
+              <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+              <span>Azure Operations Center</span>
+            </div>
+          </div>
+        )}
       </SidebarContent>
     </Sidebar>
   );

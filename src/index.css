@@ -2,13 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Azure-inspired design system for AzureOps Monitor
-All colors MUST be HSL.
+/* Modern Azure-inspired design system for AzureOps Monitor
+All colors MUST be HSL. Professional, accessible, and engaging.
 */
 
 @layer base {
   :root {
-    /* Azure color palette */
+    /* Enhanced Azure color palette */
     --background: 210 17% 98%;
     --foreground: 210 11% 15%;
 
@@ -18,12 +18,13 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 210 11% 15%;
 
-    /* Azure blue primary */
+    /* Modern Azure blue primary with depth */
     --primary: 210 100% 50%;
     --primary-foreground: 0 0% 100%;
     --primary-hover: 210 100% 45%;
+    --primary-muted: 210 60% 85%;
 
-    /* Azure secondary colors */
+    /* Enhanced secondary colors */
     --secondary: 210 17% 95%;
     --secondary-foreground: 210 11% 15%;
 
@@ -33,47 +34,56 @@ All colors MUST be HSL.
     --accent: 210 17% 93%;
     --accent-foreground: 210 11% 15%;
 
-    /* Status colors */
+    /* Enhanced status colors with better contrast */
     --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
+    --success-muted: 142 40% 85%;
     --warning: 45 100% 51%;
     --warning-foreground: 0 0% 100%;
+    --warning-muted: 45 60% 85%;
     --destructive: 0 65% 51%;
     --destructive-foreground: 0 0% 100%;
+    --destructive-muted: 0 40% 85%;
 
     --border: 210 17% 89%;
     --input: 210 17% 89%;
     --ring: 210 100% 50%;
 
-    /* Gradients */
+    /* Enhanced gradients for modern appeal */
     --gradient-primary: linear-gradient(135deg, hsl(210 100% 50%), hsl(220 100% 60%));
     --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(210 17% 98%));
     --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(152 86% 46%));
     --gradient-warning: linear-gradient(135deg, hsl(45 100% 51%), hsl(35 100% 61%));
     --gradient-error: linear-gradient(135deg, hsl(0 65% 51%), hsl(10 75% 61%));
+    --gradient-sidebar: linear-gradient(180deg, hsl(210 15% 99%), hsl(210 17% 97%));
+    --gradient-table-header: linear-gradient(90deg, hsl(210 100% 50%), hsl(220 100% 55%));
 
-    /* Shadows */
+    /* Modern shadow system */
     --shadow-card: 0 2px 8px hsl(210 17% 89% / 0.3);
     --shadow-hover: 0 4px 16px hsl(210 100% 50% / 0.15);
     --shadow-focus: 0 0 0 3px hsl(210 100% 50% / 0.2);
+    --shadow-sidebar: 2px 0 8px hsl(210 17% 89% / 0.2);
+    --shadow-table: 0 1px 3px hsl(210 17% 89% / 0.3);
+    --shadow-elevated: 0 8px 32px hsl(210 17% 89% / 0.4);
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 98%;
+    /* Enhanced sidebar design */
+    --sidebar-background: 210 15% 99%;
+    --sidebar-foreground: 210 11% 25%;
+    --sidebar-primary: 210 100% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 17% 94%;
+    --sidebar-accent-foreground: 210 11% 15%;
+    --sidebar-border: 210 17% 92%;
+    --sidebar-ring: 210 100% 50%;
+    --sidebar-hover: 210 100% 96%;
 
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Table design tokens */
+    --table-header: 210 100% 50%;
+    --table-header-foreground: 0 0% 100%;
+    --table-row-hover: 210 30% 97%;
+    --table-border: 210 17% 92%;
   }
 
   .dark {
@@ -86,8 +96,9 @@ All colors MUST be HSL.
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
+    --primary: 210 100% 60%;
     --primary-foreground: 222.2 47.4% 11.2%;
+    --primary-muted: 210 40% 25%;
 
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
@@ -98,20 +109,36 @@ All colors MUST be HSL.
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 62.8% 30.6%;
+    --success: 142 76% 46%;
+    --success-foreground: 0 0% 100%;
+    --success-muted: 142 40% 25%;
+    --warning: 45 100% 61%;
+    --warning-foreground: 0 0% 100%;
+    --warning-muted: 45 40% 25%;
+    --destructive: 0 62.8% 50.6%;
     --destructive-foreground: 210 40% 98%;
+    --destructive-muted: 0 40% 25%;
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Dark mode sidebar */
+    --sidebar-background: 222.2 84% 4.9%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 210 100% 60%;
+    --sidebar-primary-foreground: 222.2 47.4% 11.2%;
+    --sidebar-accent: 217.2 32.6% 17.5%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217.2 32.6% 17.5%;
+    --sidebar-ring: 210 100% 60%;
+    --sidebar-hover: 217.2 32.6% 20%;
+
+    /* Dark mode table tokens */
+    --table-header: 210 100% 60%;
+    --table-header-foreground: 222.2 47.4% 11.2%;
+    --table-row-hover: 217.2 32.6% 20%;
+    --table-border: 217.2 32.6% 17.5%;
   }
 }
 
@@ -122,5 +149,88 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Typography enhancements */
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  /* Enhanced sidebar styles */
+  .sidebar-enhanced {
+    @apply bg-gradient-to-b from-sidebar via-sidebar to-sidebar/95;
+    @apply shadow-sidebar backdrop-blur-sm;
+    @apply border-r border-sidebar-border;
+  }
+
+  .sidebar-nav-item {
+    @apply relative transition-all duration-200 ease-in-out;
+    @apply hover:bg-sidebar-hover hover:shadow-sm;
+    @apply rounded-lg mx-2 my-1;
+  }
+
+  .sidebar-nav-item.active {
+    @apply bg-primary text-primary-foreground shadow-sm;
+    @apply before:absolute before:left-0 before:top-0 before:bottom-0;
+    @apply before:w-1 before:bg-primary-foreground before:rounded-r;
+  }
+
+  /* Enhanced table styles */
+  .table-enhanced {
+    @apply bg-card shadow-table rounded-lg overflow-hidden;
+  }
+
+  .table-header-enhanced {
+    @apply bg-gradient-to-r from-table-header to-table-header/90;
+    @apply text-table-header-foreground font-semibold;
+    @apply border-b border-table-border;
+  }
+
+  .table-row-enhanced {
+    @apply transition-colors duration-150 ease-in-out;
+    @apply hover:bg-table-row-hover;
+    @apply border-b border-table-border/50;
+  }
+
+  .table-cell-enhanced {
+    @apply px-6 py-4 text-sm;
+  }
+
+  /* Status badges with enhanced styling */
+  .badge-enhanced {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+    @apply shadow-sm transition-all duration-200;
+  }
+
+  .badge-success {
+    @apply bg-success-muted text-success border border-success/20;
+  }
+
+  .badge-warning {
+    @apply bg-warning-muted text-warning border border-warning/20;
+  }
+
+  .badge-error {
+    @apply bg-destructive-muted text-destructive border border-destructive/20;
+  }
+
+  /* Modern card styling */
+  .card-enhanced {
+    @apply bg-gradient-card shadow-card hover:shadow-hover;
+    @apply transition-shadow duration-300 ease-in-out;
+    @apply border border-border/50 rounded-lg;
+  }
+
+  /* Focus states */
+  .focus-enhanced {
+    @apply focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
   }
 }
