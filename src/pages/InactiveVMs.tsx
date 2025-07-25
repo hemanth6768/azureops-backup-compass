@@ -192,7 +192,7 @@ const InactiveVMs = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>#</TableHead>
+                      <TableHead>ID</TableHead>
                       <TableHead>VM Name</TableHead>
                       <TableHead>Subscription</TableHead>
                       <TableHead>Vault Name</TableHead>
@@ -207,7 +207,7 @@ const InactiveVMs = () => {
                   <TableBody>
                     {filteredVMs.map((vm, index) => (
                       <TableRow key={index}>
-                        <TableCell className="text-muted-foreground">{index + 1}</TableCell>
+                        <TableCell className="text-muted-foreground font-bold">{index + 1}</TableCell>
                         <TableCell className="font-medium">{vm.vmName}</TableCell>
                         <TableCell>{vm.subscriptionName}</TableCell>
                         <TableCell>{vm.vaultName}</TableCell>

@@ -185,7 +185,7 @@ export const api = {
   },
 
   async getInactiveVMsBySubscription(subscriptionName: string) {
-    const response = await fetch(`${API_BASE_URL}/api/Monitoring/InactiveVmDetails/${encodeURIComponent(subscriptionName)}`);
+    const response = await fetch(`${API_BASE_URL}/api/Monitoring/inactivevm/details?subscriptionName=${encodeURIComponent(subscriptionName)}`);
     if (!response.ok) {
       throw new Error(`Failed to fetch inactive VMs for subscription: ${subscriptionName}`);
     }

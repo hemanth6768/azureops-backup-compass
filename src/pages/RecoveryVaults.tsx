@@ -197,7 +197,7 @@ const RecoveryVaults = () => {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>#</TableHead>
+                        <TableHead>ID</TableHead>
                         <TableHead>Vault Name</TableHead>
                         <TableHead>Subscription</TableHead>
                         <TableHead>Resource Group</TableHead>
@@ -207,7 +207,7 @@ const RecoveryVaults = () => {
                     <TableBody>
                       {filteredVaults.map((vault, index) => (
                         <TableRow key={index}>
-                          <TableCell className="text-muted-foreground">{index + 1}</TableCell>
+                          <TableCell className="text-muted-foreground font-bold">{index + 1}</TableCell>
                           <TableCell className="font-medium">{vault.vaultName}</TableCell>
                           <TableCell>{vault.subscriptionName}</TableCell>
                           <TableCell>{vault.resourceGroupName}</TableCell>
