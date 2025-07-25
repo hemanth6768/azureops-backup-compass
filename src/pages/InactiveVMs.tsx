@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Search, Download, ArrowLeft, AlertTriangle } from 'lucide-react';
 import { api, BackupItem } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
 
@@ -18,10 +18,12 @@ const InactiveVMs = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const subscriptionParam = searchParams.get('subscription');
 
   useEffect(() => {
     loadInactiveVMs();
-  }, []);
+  }, [subscriptionParam]);
 
   useEffect(() => {
     filterVMs();
@@ -30,7 +32,12 @@ const InactiveVMs = () => {
   const loadInactiveVMs = async () => {
     setIsLoading(true);
     try {
-      const data = await api.getInactiveVMDetails();
+      let data;
+      if (subscriptionParam) {
+        data = await api.getInactiveVMsBySubscription(subscriptionParam);
+      } else {
+        data = await api.getInactiveVMDetails();
+      }
       setInactiveVMs(data);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load inactive VMs';
@@ -136,7 +143,14 @@ const InactiveVMs = () => {
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Dashboard
           </Button>
-          <h1 className="text-3xl font-bold text-foreground">Inactive VMs Details</h1>
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">Inactive VMs Details</h1>
+            {subscriptionParam && (
+              <p className="text-muted-foreground mt-1">
+                Filtered for subscription: <span className="font-medium">{subscriptionParam}</span>
+              </p>
+            )}
+          </div>
         </div>
 
         <Card>
@@ -178,6 +192,7 @@ const InactiveVMs = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
+                      <TableHead>#</TableHead>
                       <TableHead>VM Name</TableHead>
                       <TableHead>Subscription</TableHead>
                       <TableHead>Vault Name</TableHead>
@@ -192,6 +207,7 @@ const InactiveVMs = () => {
                   <TableBody>
                     {filteredVMs.map((vm, index) => (
                       <TableRow key={index}>
+                        <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                         <TableCell className="font-medium">{vm.vmName}</TableCell>
                         <TableCell>{vm.subscriptionName}</TableCell>
                         <TableCell>{vm.vaultName}</TableCell>
@@ -205,7 +221,7 @@ const InactiveVMs = () => {
                     ))}
                     {filteredVMs.length === 0 && !isLoading && (
                       <TableRow>
-                        <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
+                        <TableCell colSpan={10} className="text-center py-8 text-muted-foreground">
                           No inactive VMs found
                         </TableCell>
                       </TableRow>

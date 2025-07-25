@@ -126,6 +126,7 @@ const VMCpuUsage = () => {
                     <Table>
                       <TableHeader>
                         <TableRow>
+                          <TableHead>#</TableHead>
                           <TableHead>Computer Name</TableHead>
                           <TableHead>Subscription</TableHead>
                           <TableHead>Max CPU Usage</TableHead>
@@ -135,6 +136,7 @@ const VMCpuUsage = () => {
                       <TableBody>
                         {filteredData.map((usage, index) => (
                           <TableRow key={`${usage.computer}-${usage.timeGenerated}-${index}`}>
+                            <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                             <TableCell className="font-medium">
                               {usage.computer}
                             </TableCell>

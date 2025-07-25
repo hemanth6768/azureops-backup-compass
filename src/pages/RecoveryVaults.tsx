@@ -194,27 +194,29 @@ const RecoveryVaults = () => {
               <div className="text-center py-8">Loading recovery vaults...</div>
             ) : (
               <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Vault Name</TableHead>
-                      <TableHead>Subscription</TableHead>
-                      <TableHead>Resource Group</TableHead>
-                      <TableHead>Location</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredVaults.map((vault, index) => (
-                      <TableRow key={index}>
-                        <TableCell className="font-medium">{vault.vaultName}</TableCell>
-                        <TableCell>{vault.subscriptionName}</TableCell>
-                        <TableCell>{vault.resourceGroupName}</TableCell>
-                        <TableCell className="capitalize">{vault.location}</TableCell>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>#</TableHead>
+                        <TableHead>Vault Name</TableHead>
+                        <TableHead>Subscription</TableHead>
+                        <TableHead>Resource Group</TableHead>
+                        <TableHead>Location</TableHead>
                       </TableRow>
-                    ))}
+                    </TableHeader>
+                    <TableBody>
+                      {filteredVaults.map((vault, index) => (
+                        <TableRow key={index}>
+                          <TableCell className="text-muted-foreground">{index + 1}</TableCell>
+                          <TableCell className="font-medium">{vault.vaultName}</TableCell>
+                          <TableCell>{vault.subscriptionName}</TableCell>
+                          <TableCell>{vault.resourceGroupName}</TableCell>
+                          <TableCell className="capitalize">{vault.location}</TableCell>
+                        </TableRow>
+                      ))}
                     {filteredVaults.length === 0 && !isLoading && (
                       <TableRow>
-                        <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+                        <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
                           No recovery vaults found
                         </TableCell>
                       </TableRow>

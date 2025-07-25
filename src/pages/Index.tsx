@@ -68,7 +68,11 @@ const Index = () => {
       setStats({
         totalVaults: vaultCountData.totalVaults || vaultCountData.vaultCount || vaultCountData.TotalVaults || vaultsData.length || 0,
         activeVMs: activeVMsData.activeVMs || activeVMsData.activeVms || activeVMsData.ActiveVMs || 0,
-        healthyBackupPercentage: healthyBackupData.healthyBackupPercentage || healthyBackupData.healthyBackups || healthyBackupData.HealthyBackupPercentage || '0%',
+        healthyBackupPercentage: (() => {
+          const percentage = healthyBackupData.healthyBackupPercentage || healthyBackupData.healthyBackups || healthyBackupData.HealthyBackupPercentage || '0%';
+          const numericValue = parseFloat(percentage.toString().replace('%', ''));
+          return `${numericValue.toFixed(2)}%`;
+        })(),
         inactiveVMs: inactiveVMsData.inactiveVMs || inactiveVMsData.inactiveVms || inactiveVMsData.InactiveVMs || 0
       });
     } catch (err) {
@@ -89,7 +93,11 @@ const Index = () => {
   };
 
   const handleInactiveVMsClick = () => {
-    navigate('/inactive-vms');
+    if (selectedSubscription !== 'all') {
+      navigate(`/inactive-vms?subscription=${encodeURIComponent(selectedSubscription)}`);
+    } else {
+      navigate('/inactive-vms');
+    }
   };
 
   // Parse percentage for variant calculation

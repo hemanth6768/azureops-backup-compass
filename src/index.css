@@ -189,8 +189,8 @@ All colors MUST be HSL. Professional, accessible, and engaging.
   }
 
   .table-header-enhanced {
-    @apply bg-gradient-to-r from-table-header to-table-header/90;
-    @apply text-table-header-foreground font-semibold;
+    @apply bg-gradient-to-r from-slate-50 to-slate-100;
+    @apply text-slate-700 font-semibold;
     @apply border-b border-table-border;
   }
 
