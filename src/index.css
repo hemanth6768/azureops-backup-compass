@@ -173,14 +173,14 @@ All colors MUST be HSL. Professional, accessible, and engaging.
 
   .sidebar-nav-item {
     @apply relative transition-all duration-200 ease-in-out;
-    @apply hover:bg-sidebar-hover hover:shadow-sm;
+    @apply hover:bg-slate-100/80 hover:shadow-sm;
     @apply rounded-lg mx-2 my-1;
   }
 
   .sidebar-nav-item.active {
-    @apply bg-primary text-primary-foreground shadow-sm;
+    @apply bg-slate-700 text-white shadow-sm;
     @apply before:absolute before:left-0 before:top-0 before:bottom-0;
-    @apply before:w-1 before:bg-primary-foreground before:rounded-r;
+    @apply before:w-1 before:bg-white before:rounded-r;
   }
 
   /* Enhanced table styles */
@@ -201,7 +201,7 @@ All colors MUST be HSL. Professional, accessible, and engaging.
   }
 
   .table-cell-enhanced {
-    @apply px-6 py-4 text-sm;
+    @apply px-6 py-4 text-sm text-center align-middle;
   }
 
   /* Status badges with enhanced styling */
