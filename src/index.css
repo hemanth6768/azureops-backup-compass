@@ -166,9 +166,9 @@ All colors MUST be HSL. Professional, accessible, and engaging.
 @layer components {
   /* Enhanced sidebar styles */
   .sidebar-enhanced {
-    @apply bg-gradient-to-b from-sidebar via-sidebar to-sidebar/95;
+    @apply bg-gradient-to-b from-slate-50 to-slate-100;
     @apply shadow-sidebar backdrop-blur-sm;
-    @apply border-r border-sidebar-border;
+    @apply border-r border-slate-200;
   }
 
   .sidebar-nav-item {
