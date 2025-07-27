@@ -185,7 +185,8 @@ All colors MUST be HSL. Enhanced visual hierarchy and contrast.
 @layer components {
   /* Glass morphism sidebar with modern styling */
   .sidebar-enhanced {
-    @apply bg-gradient-sidebar glass-effect shadow-sidebar;
+    background: var(--gradient-sidebar);
+    @apply glass-effect shadow-sidebar;
     @apply border-r border-sidebar-border/50;
   }
 
