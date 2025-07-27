@@ -212,7 +212,8 @@ All colors MUST be HSL. Enhanced visual hierarchy and contrast.
   }
 
   .table-header-enhanced {
-    @apply bg-gradient-table-header glass-effect;
+    background: var(--gradient-table-header);
+    @apply glass-effect;
     @apply text-table-header-foreground font-semibold text-sm;
     @apply border-b border-table-border/50;
   }
