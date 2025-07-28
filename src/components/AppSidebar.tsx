@@ -1,4 +1,4 @@
-import { BarChart3, Database, Cloud, Cpu, AlertTriangle } from 'lucide-react';
+import { BarChart3, Database, Cloud, Cpu, AlertTriangle, Settings } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   Sidebar,
@@ -18,6 +18,7 @@ const items = [
   { title: 'Backup Items', url: '/backup-items', icon: Cloud },
   { title: 'Inactive VMs', url: '/inactive-vms', icon: AlertTriangle },
   { title: 'Azure VM CPU Usage', url: '/vm-cpu-usage', icon: Cpu },
+  { title: 'Settings', url: '/settings', icon: Settings },
 ];
 
 export function AppSidebar() {

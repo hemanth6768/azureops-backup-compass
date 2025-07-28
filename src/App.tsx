@@ -8,6 +8,7 @@ import BackupItems from "./pages/BackupItems";
 import RecoveryVaults from "./pages/RecoveryVaults";
 import InactiveVMs from "./pages/InactiveVMs";
 import VMCpuUsage from "./pages/VMCpuUsage";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/recovery-vaults" element={<RecoveryVaults />} />
           <Route path="/inactive-vms" element={<InactiveVMs />} />
           <Route path="/vm-cpu-usage" element={<VMCpuUsage />} />
+          <Route path="/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
