@@ -1,279 +1,211 @@
 import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Settings as SettingsIcon, Palette, Monitor, Save } from 'lucide-react';
+import { Settings as SettingsIcon, Save } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
-// Theme modes
-const themeModes = [
-  { name: 'Dark Mode', id: 'dark', description: 'Modern dark theme with glassmorphism' },
-  { name: 'Light Mode', id: 'light', description: 'Clean light theme with subtle shadows' }
-];
-
-// Predefined color themes
-const colorThemes = [
+// Predefined complete themes
+const themes = [
   {
-    name: 'Default Blue',
-    id: 'default',
+    name: 'Dark Theme',
+    id: 'dark',
+    description: 'Modern dark theme with glassmorphism effects',
+    preview: '220 13% 9%',
     colors: {
+      mode: 'dark',
       primary: '217 91% 60%',
       primaryGlow: '237 100% 70%',
-      success: '142 76% 50%',
-      warning: '38 92% 50%',
-      destructive: '0 84% 60%',
+      background: '220 13% 9%',
+      foreground: '220 13% 95%',
+      card: '220 13% 12%',
+      cardForeground: '220 13% 95%',
+      sidebar: '220 13% 10%',
+      sidebarForeground: '220 13% 90%',
+      border: '220 13% 20%',
+      input: '220 13% 18%',
+      muted: '220 13% 15%',
+      mutedForeground: '220 13% 65%'
     }
   },
   {
-    name: 'Purple Storm',
-    id: 'purple',
+    name: 'Light Theme',
+    id: 'light',
+    description: 'Clean light theme with subtle shadows',
+    preview: '0 0% 100%',
     colors: {
-      primary: '270 91% 65%',
-      primaryGlow: '285 100% 75%',
-      success: '142 76% 50%',
-      warning: '38 92% 50%',
-      destructive: '0 84% 60%',
+      mode: 'light',
+      primary: '217 91% 60%',
+      primaryGlow: '237 100% 70%',
+      background: '0 0% 100%',
+      foreground: '220 13% 15%',
+      card: '0 0% 100%',
+      cardForeground: '220 13% 15%',
+      sidebar: '0 0% 100%',
+      sidebarForeground: '220 13% 20%',
+      border: '220 13% 85%',
+      input: '220 13% 95%',
+      muted: '220 13% 95%',
+      mutedForeground: '220 13% 45%'
     }
   },
   {
-    name: 'Emerald Dream',
-    id: 'emerald',
+    name: 'Light Blue',
+    id: 'light-blue',
+    description: 'Soft blue theme with cool undertones',
+    preview: '220 50% 98%',
     colors: {
-      primary: '160 84% 39%',
-      primaryGlow: '158 64% 52%',
-      success: '142 76% 50%',
-      warning: '38 92% 50%',
-      destructive: '0 84% 60%',
+      mode: 'light',
+      primary: '210 100% 50%',
+      primaryGlow: '220 100% 60%',
+      background: '220 50% 98%',
+      foreground: '220 30% 15%',
+      card: '220 50% 99%',
+      cardForeground: '220 30% 15%',
+      sidebar: '220 50% 96%',
+      sidebarForeground: '220 30% 20%',
+      border: '220 30% 85%',
+      input: '220 30% 95%',
+      muted: '220 30% 93%',
+      mutedForeground: '220 30% 45%'
     }
   },
   {
-    name: 'Amber Sunset',
-    id: 'amber',
+    name: 'Saffron',
+    id: 'saffron',
+    description: 'Warm saffron theme with golden accents',
+    preview: '45 100% 96%',
     colors: {
+      mode: 'light',
       primary: '45 93% 47%',
       primaryGlow: '43 96% 56%',
-      success: '142 76% 50%',
-      warning: '38 92% 50%',
-      destructive: '0 84% 60%',
+      background: '45 100% 96%',
+      foreground: '45 30% 15%',
+      card: '45 80% 98%',
+      cardForeground: '45 30% 15%',
+      sidebar: '45 60% 94%',
+      sidebarForeground: '45 30% 20%',
+      border: '45 30% 82%',
+      input: '45 30% 92%',
+      muted: '45 30% 90%',
+      mutedForeground: '45 30% 40%'
     }
   },
   {
-    name: 'Rose Pink',
-    id: 'rose',
+    name: 'Purple Night',
+    id: 'purple-night',
+    description: 'Deep purple theme with mystical vibes',
+    preview: '270 30% 8%',
     colors: {
-      primary: '330 81% 60%',
-      primaryGlow: '335 88% 70%',
-      success: '142 76% 50%',
-      warning: '38 92% 50%',
-      destructive: '0 84% 60%',
+      mode: 'dark',
+      primary: '270 91% 65%',
+      primaryGlow: '285 100% 75%',
+      background: '270 30% 8%',
+      foreground: '270 10% 95%',
+      card: '270 30% 12%',
+      cardForeground: '270 10% 95%',
+      sidebar: '270 30% 10%',
+      sidebarForeground: '270 10% 90%',
+      border: '270 20% 20%',
+      input: '270 20% 18%',
+      muted: '270 20% 15%',
+      mutedForeground: '270 10% 65%'
     }
   },
   {
-    name: 'Cyan Electric',
-    id: 'cyan',
+    name: 'Forest Green',
+    id: 'forest-green',
+    description: 'Natural green theme inspired by forests',
+    preview: '160 30% 10%',
     colors: {
-      primary: '188 94% 43%',
-      primaryGlow: '186 100% 56%',
-      success: '142 76% 50%',
-      warning: '38 92% 50%',
-      destructive: '0 84% 60%',
+      mode: 'dark',
+      primary: '160 84% 39%',
+      primaryGlow: '158 64% 52%',
+      background: '160 30% 10%',
+      foreground: '160 10% 95%',
+      card: '160 30% 13%',
+      cardForeground: '160 10% 95%',
+      sidebar: '160 30% 11%',
+      sidebarForeground: '160 10% 90%',
+      border: '160 20% 22%',
+      input: '160 20% 20%',
+      muted: '160 20% 17%',
+      mutedForeground: '160 10% 65%'
     }
   }
 ];
 
-const backgroundOptions = {
-  dark: [
-    { name: 'Dark Glassmorphism', id: 'dark', value: '220 13% 9%' },
-    { name: 'Midnight Black', id: 'midnight', value: '220 20% 5%' },
-    { name: 'Deep Blue', id: 'deep-blue', value: '220 50% 8%' },
-    { name: 'Charcoal', id: 'charcoal', value: '0 0% 10%' }
-  ],
-  light: [
-    { name: 'Pure White', id: 'light', value: '0 0% 100%' },
-    { name: 'Soft Gray', id: 'light-gray', value: '220 13% 95%' },
-    { name: 'Warm White', id: 'warm', value: '40 10% 98%' },
-    { name: 'Cool White', id: 'cool', value: '220 20% 98%' }
-  ]
-};
-
-const panelBackgroundOptions = {
-  dark: [
-    { name: 'Glass Effect', id: 'glass', value: '220 13% 12%' },
-    { name: 'Semi Transparent', id: 'semi', value: '220 13% 15%' },
-    { name: 'Solid Dark', id: 'solid', value: '220 13% 8%' },
-    { name: 'Elevated', id: 'elevated', value: '220 13% 18%' }
-  ],
-  light: [
-    { name: 'Clean White', id: 'light-clean', value: '0 0% 100%' },
-    { name: 'Soft Gray', id: 'light-soft', value: '220 13% 98%' },
-    { name: 'Subtle Tint', id: 'light-tint', value: '220 10% 96%' },
-    { name: 'Paper White', id: 'light-paper', value: '40 10% 99%' }
-  ]
-};
-
-const sidebarColorOptions = [
-  { name: 'Default', id: 'default', value: '220 13% 10%' },
-  { name: 'Deep Blue', id: 'blue', value: '220 50% 12%' },
-  { name: 'Purple Dark', id: 'purple', value: '270 30% 15%' },
-  { name: 'Green Dark', id: 'green', value: '160 30% 12%' },
-  { name: 'Amber Dark', id: 'amber', value: '45 40% 15%' },
-  { name: 'Rose Dark', id: 'rose', value: '330 30% 15%' }
-];
-
-const sidebarLightColorOptions = [
-  { name: 'Clean White', id: 'light-white', value: '0 0% 100%' },
-  { name: 'Soft Blue', id: 'light-blue', value: '220 50% 98%' },
-  { name: 'Lavender', id: 'light-purple', value: '270 30% 97%' },
-  { name: 'Mint', id: 'light-green', value: '160 30% 98%' },
-  { name: 'Cream', id: 'light-amber', value: '45 40% 98%' },
-  { name: 'Blush', id: 'light-rose', value: '330 30% 98%' }
-];
-
 const Settings = () => {
-  const [activeTheme, setActiveTheme] = useState('default');
-  const [themeMode, setThemeMode] = useState('dark');
-  const [selectedBackground, setSelectedBackground] = useState('dark');
-  const [selectedPanelBg, setSelectedPanelBg] = useState('glass');
-  const [selectedSidebarBg, setSelectedSidebarBg] = useState('default');
+  const [selectedTheme, setSelectedTheme] = useState('dark');
   const { toast } = useToast();
 
   // Load saved settings on component mount
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') || 'default';
-    const savedMode = localStorage.getItem('themeMode') || 'dark';
-    const savedBackground = localStorage.getItem('background') || 'dark';
-    const savedPanelBg = localStorage.getItem('panelBackground') || 'glass';
-    const savedSidebarBg = localStorage.getItem('sidebarBackground') || 'default';
-    
-    setActiveTheme(savedTheme);
-    setThemeMode(savedMode);
-    setSelectedBackground(savedBackground);
-    setSelectedPanelBg(savedPanelBg);
-    setSelectedSidebarBg(savedSidebarBg);
+    const savedTheme = localStorage.getItem('selectedTheme') || 'dark';
+    setSelectedTheme(savedTheme);
     
     // Apply the saved theme immediately
-    applyTheme(savedTheme, savedMode, savedBackground, savedPanelBg, savedSidebarBg);
+    applyTheme(savedTheme);
   }, []);
 
-  const applyTheme = (themeId: string, mode: string, backgroundId: string, panelBgId: string, sidebarBgId: string) => {
-    const theme = colorThemes.find(t => t.id === themeId);
-    const background = backgroundOptions[mode as 'dark' | 'light']?.find(b => b.id === backgroundId);
-    const panelBg = panelBackgroundOptions[mode as 'dark' | 'light']?.find(p => p.id === panelBgId);
-    const sidebarOptions = mode === 'dark' ? sidebarColorOptions : sidebarLightColorOptions;
-    const sidebarBg = sidebarOptions.find(s => s.id === sidebarBgId);
+  const applyTheme = (themeId: string) => {
+    const theme = themes.find(t => t.id === themeId);
     
-    if (theme && background && panelBg && sidebarBg) {
+    if (theme) {
       const root = document.documentElement;
       
-      // Apply theme mode
-      document.documentElement.classList.toggle('dark', mode === 'dark');
+      // Apply theme mode class
+      document.documentElement.classList.toggle('dark', theme.colors.mode === 'dark');
       
-      // Apply primary colors
+      // Apply all theme colors
       root.style.setProperty('--primary', theme.colors.primary);
       root.style.setProperty('--primary-hover', theme.colors.primary);
-      
-      // Apply background
-      root.style.setProperty('--background', background.value);
-      
-      // Apply panel background
-      root.style.setProperty('--card', panelBg.value);
-      root.style.setProperty('--popover', panelBg.value);
-      
-      // Apply sidebar background
-      root.style.setProperty('--sidebar-background', sidebarBg.value);
-      
-      // Apply mode-specific colors
-      if (mode === 'light') {
-        root.style.setProperty('--foreground', '220 13% 15%');
-        root.style.setProperty('--card-foreground', '220 13% 15%');
-        root.style.setProperty('--popover-foreground', '220 13% 15%');
-        root.style.setProperty('--muted-foreground', '220 13% 45%');
-        root.style.setProperty('--sidebar-foreground', '220 13% 20%');
-        root.style.setProperty('--sidebar-accent', '220 13% 95%');
-        root.style.setProperty('--sidebar-accent-foreground', '220 13% 15%');
-        root.style.setProperty('--sidebar-border', '220 13% 85%');
-        root.style.setProperty('--sidebar-hover', '220 13% 92%');
-        root.style.setProperty('--border', '220 13% 85%');
-        root.style.setProperty('--input', '220 13% 95%');
-      } else {
-        root.style.setProperty('--foreground', '220 13% 95%');
-        root.style.setProperty('--card-foreground', '220 13% 95%');
-        root.style.setProperty('--popover-foreground', '220 13% 95%');
-        root.style.setProperty('--muted-foreground', '220 13% 65%');
-        root.style.setProperty('--sidebar-foreground', '220 13% 90%');
-        root.style.setProperty('--sidebar-accent', '220 13% 18%');
-        root.style.setProperty('--sidebar-accent-foreground', '220 13% 95%');
-        root.style.setProperty('--sidebar-border', '220 13% 20%');
-        root.style.setProperty('--sidebar-hover', '220 13% 15%');
-        root.style.setProperty('--border', '220 13% 20%');
-        root.style.setProperty('--input', '220 13% 18%');
-      }
+      root.style.setProperty('--background', theme.colors.background);
+      root.style.setProperty('--foreground', theme.colors.foreground);
+      root.style.setProperty('--card', theme.colors.card);
+      root.style.setProperty('--card-foreground', theme.colors.cardForeground);
+      root.style.setProperty('--popover', theme.colors.card);
+      root.style.setProperty('--popover-foreground', theme.colors.cardForeground);
+      root.style.setProperty('--sidebar-background', theme.colors.sidebar);
+      root.style.setProperty('--sidebar-foreground', theme.colors.sidebarForeground);
+      root.style.setProperty('--sidebar-accent', theme.colors.mode === 'dark' ? '220 13% 18%' : '220 13% 95%');
+      root.style.setProperty('--sidebar-accent-foreground', theme.colors.sidebarForeground);
+      root.style.setProperty('--sidebar-border', theme.colors.border);
+      root.style.setProperty('--sidebar-hover', theme.colors.mode === 'dark' ? '220 13% 15%' : '220 13% 92%');
+      root.style.setProperty('--border', theme.colors.border);
+      root.style.setProperty('--input', theme.colors.input);
+      root.style.setProperty('--muted', theme.colors.muted);
+      root.style.setProperty('--muted-foreground', theme.colors.mutedForeground);
       
       // Update gradients
       root.style.setProperty('--gradient-primary', `linear-gradient(135deg, hsl(${theme.colors.primary} / 0.9), hsl(${theme.colors.primaryGlow} / 0.8))`);
-      root.style.setProperty('--gradient-sidebar', `linear-gradient(180deg, hsl(${sidebarBg.value} / 0.95), hsl(${sidebarBg.value} / 0.9))`);
+      root.style.setProperty('--gradient-sidebar', `linear-gradient(180deg, hsl(${theme.colors.sidebar} / 0.95), hsl(${theme.colors.sidebar} / 0.9))`);
     }
   };
 
   const handleThemeChange = (themeId: string) => {
-    setActiveTheme(themeId);
-    applyTheme(themeId, themeMode, selectedBackground, selectedPanelBg, selectedSidebarBg);
-  };
-
-  const handleModeChange = (mode: string) => {
-    setThemeMode(mode);
-    // Reset to defaults when switching modes
-    const defaultBg = mode === 'dark' ? 'dark' : 'light';
-    const defaultPanel = mode === 'dark' ? 'glass' : 'light-clean';
-    const defaultSidebar = mode === 'dark' ? 'default' : 'light-white';
-    setSelectedBackground(defaultBg);
-    setSelectedPanelBg(defaultPanel);
-    setSelectedSidebarBg(defaultSidebar);
-    applyTheme(activeTheme, mode, defaultBg, defaultPanel, defaultSidebar);
-  };
-
-  const handleBackgroundChange = (backgroundId: string) => {
-    setSelectedBackground(backgroundId);
-    applyTheme(activeTheme, themeMode, backgroundId, selectedPanelBg, selectedSidebarBg);
-  };
-
-  const handlePanelBgChange = (panelBgId: string) => {
-    setSelectedPanelBg(panelBgId);
-    applyTheme(activeTheme, themeMode, selectedBackground, panelBgId, selectedSidebarBg);
-  };
-
-  const handleSidebarBgChange = (sidebarBgId: string) => {
-    setSelectedSidebarBg(sidebarBgId);
-    applyTheme(activeTheme, themeMode, selectedBackground, selectedPanelBg, sidebarBgId);
+    setSelectedTheme(themeId);
+    applyTheme(themeId);
   };
 
   const saveSettings = () => {
-    localStorage.setItem('theme', activeTheme);
-    localStorage.setItem('themeMode', themeMode);
-    localStorage.setItem('background', selectedBackground);
-    localStorage.setItem('panelBackground', selectedPanelBg);
-    localStorage.setItem('sidebarBackground', selectedSidebarBg);
+    localStorage.setItem('selectedTheme', selectedTheme);
     
     toast({
-      title: "Settings Saved",
-      description: "Your theme preferences have been saved successfully.",
+      title: "Theme Saved",
+      description: "Your theme preference has been saved successfully.",
     });
   };
 
   const resetToDefault = () => {
-    setActiveTheme('default');
-    setThemeMode('dark');
-    setSelectedBackground('dark');
-    setSelectedPanelBg('glass');
-    setSelectedSidebarBg('default');
-    applyTheme('default', 'dark', 'dark', 'glass', 'default');
+    setSelectedTheme('dark');
+    applyTheme('dark');
     
     toast({
       title: "Reset to Default",
-      description: "Theme settings have been reset to default values.",
+      description: "Theme has been reset to default dark theme.",
     });
   };
 
@@ -303,235 +235,64 @@ const Settings = () => {
                 <div className="relative z-10">
                   <h1 className="text-4xl font-bold mb-2">Theme Settings</h1>
                   <p className="text-xl text-white/90">
-                    Personalize your dashboard with custom colors and backgrounds
+                    Choose from our carefully crafted theme presets
                   </p>
                 </div>
               </div>
             </div>
 
-            <Tabs defaultValue="mode" className="w-full">
-              <TabsList className="grid w-full grid-cols-5">
-                <TabsTrigger value="mode">
-                  <Monitor className="w-4 h-4 mr-2" />
-                  Theme Mode
-                </TabsTrigger>
-                <TabsTrigger value="appearance">
-                  <Palette className="w-4 h-4 mr-2" />
-                  Colors
-                </TabsTrigger>
-                <TabsTrigger value="background">
-                  <SettingsIcon className="w-4 h-4 mr-2" />
-                  Background
-                </TabsTrigger>
-                <TabsTrigger value="panels">
-                  <SettingsIcon className="w-4 h-4 mr-2" />
-                  Panels
-                </TabsTrigger>
-                <TabsTrigger value="sidebar">
-                  <SettingsIcon className="w-4 h-4 mr-2" />
-                  Sidebar
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="mode" className="space-y-6">
-                <Card className="card-enhanced">
-                  <CardHeader>
-                    <CardTitle>Theme Mode</CardTitle>
-                    <CardDescription>
-                      Choose between light and dark theme modes
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {themeModes.map((mode) => (
-                        <div
-                          key={mode.id}
-                          className={`relative p-6 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:scale-105 ${
-                            themeMode === mode.id
-                              ? 'border-primary shadow-lg shadow-primary/20'
-                              : 'border-border hover:border-primary/50'
-                          }`}
-                          onClick={() => handleModeChange(mode.id)}
+            {/* Theme Selection */}
+            <Card className="card-enhanced">
+              <CardHeader>
+                <CardTitle>Choose Your Theme</CardTitle>
+                <CardDescription>
+                  Select from our carefully crafted theme presets
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {themes.map((theme) => (
+                    <div
+                      key={theme.id}
+                      className={`relative p-6 rounded-xl border-2 cursor-pointer transition-all duration-300 hover:scale-105 ${
+                        selectedTheme === theme.id
+                          ? 'border-primary shadow-xl shadow-primary/25 ring-2 ring-primary/20'
+                          : 'border-border hover:border-primary/50 hover:shadow-lg'
+                      }`}
+                      onClick={() => handleThemeChange(theme.id)}
+                    >
+                      {/* Theme Preview */}
+                      <div className="flex items-center gap-4 mb-4">
+                        <div 
+                          className="w-16 h-16 rounded-lg border-2 shadow-inner relative overflow-hidden"
+                          style={{ backgroundColor: `hsl(${theme.preview})` }}
                         >
-                          <div className="flex items-center gap-4">
-                            <div className={`w-12 h-12 rounded-lg border shadow-inner ${
-                              mode.id === 'dark' ? 'bg-slate-900' : 'bg-white'
-                            }`} />
-                            <div>
-                              <Label className="font-medium text-base">{mode.name}</Label>
-                              <p className="text-sm text-muted-foreground">{mode.description}</p>
-                            </div>
-                          </div>
+                          <div 
+                            className="absolute top-2 left-2 w-3 h-3 rounded-full"
+                            style={{ backgroundColor: `hsl(${theme.colors.primary})` }}
+                          />
+                          <div 
+                            className="absolute bottom-2 right-2 w-2 h-2 rounded-full"
+                            style={{ backgroundColor: `hsl(${theme.colors.primaryGlow})` }}
+                          />
                         </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              <TabsContent value="appearance" className="space-y-6">
-                <Card className="card-enhanced">
-                  <CardHeader>
-                    <CardTitle>Color Themes</CardTitle>
-                    <CardDescription>
-                      Choose from predefined color schemes for your dashboard
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {colorThemes.map((theme) => (
-                        <div
-                          key={theme.id}
-                          className={`relative p-4 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:scale-105 ${
-                            activeTheme === theme.id
-                              ? 'border-primary shadow-lg shadow-primary/20'
-                              : 'border-border hover:border-primary/50'
-                          }`}
-                          onClick={() => handleThemeChange(theme.id)}
-                        >
-                          <div className="flex items-center gap-3 mb-3">
-                            <div 
-                              className="w-6 h-6 rounded-full shadow-md"
-                              style={{ backgroundColor: `hsl(${theme.colors.primary})` }}
-                            />
-                            <Label className="font-medium">{theme.name}</Label>
-                          </div>
-                          <div className="flex gap-1">
-                            <div 
-                              className="w-3 h-8 rounded-sm"
-                              style={{ backgroundColor: `hsl(${theme.colors.primary})` }}
-                            />
-                            <div 
-                              className="w-3 h-8 rounded-sm"
-                              style={{ backgroundColor: `hsl(${theme.colors.primaryGlow})` }}
-                            />
-                            <div 
-                              className="w-3 h-8 rounded-sm"
-                              style={{ backgroundColor: `hsl(${theme.colors.success})` }}
-                            />
-                            <div 
-                              className="w-3 h-8 rounded-sm"
-                              style={{ backgroundColor: `hsl(${theme.colors.warning})` }}
-                            />
-                          </div>
+                        <div className="flex-1">
+                          <Label className="font-semibold text-lg">{theme.name}</Label>
+                          <p className="text-sm text-muted-foreground mt-1">{theme.description}</p>
                         </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              <TabsContent value="background" className="space-y-6">
-                <Card className="card-enhanced">
-                  <CardHeader>
-                    <CardTitle>Background Colors</CardTitle>
-                    <CardDescription>
-                      Select the main background color for your {themeMode} theme
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {backgroundOptions[themeMode as 'dark' | 'light'].map((bg) => (
-                        <div
-                          key={bg.id}
-                          className={`relative p-6 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:scale-105 ${
-                            selectedBackground === bg.id
-                              ? 'border-primary shadow-lg shadow-primary/20'
-                              : 'border-border hover:border-primary/50'
-                          }`}
-                          onClick={() => handleBackgroundChange(bg.id)}
-                        >
-                          <div className="flex items-center gap-4">
-                            <div 
-                              className="w-12 h-12 rounded-lg border shadow-inner"
-                              style={{ backgroundColor: `hsl(${bg.value})` }}
-                            />
-                            <div>
-                              <Label className="font-medium text-base">{bg.name}</Label>
-                              <p className="text-sm text-muted-foreground">HSL: {bg.value}</p>
-                            </div>
-                          </div>
+                      </div>
+                      
+                      {/* Selection Indicator */}
+                      {selectedTheme === theme.id && (
+                        <div className="absolute top-3 right-3 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+                          <div className="w-2 h-2 bg-white rounded-full" />
                         </div>
-                      ))}
+                      )}
                     </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              <TabsContent value="panels" className="space-y-6">
-                <Card className="card-enhanced">
-                  <CardHeader>
-                    <CardTitle>Panel Background</CardTitle>
-                    <CardDescription>
-                      Customize the background of cards, modals, and other panels for {themeMode} theme
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {panelBackgroundOptions[themeMode as 'dark' | 'light'].map((panel) => (
-                        <div
-                          key={panel.id}
-                          className={`relative p-6 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:scale-105 ${
-                            selectedPanelBg === panel.id
-                              ? 'border-primary shadow-lg shadow-primary/20'
-                              : 'border-border hover:border-primary/50'
-                          }`}
-                          onClick={() => handlePanelBgChange(panel.id)}
-                        >
-                          <div className="flex items-center gap-4">
-                            <div 
-                              className="w-12 h-12 rounded-lg border shadow-inner"
-                              style={{ backgroundColor: `hsl(${panel.value})` }}
-                            />
-                            <div>
-                              <Label className="font-medium text-base">{panel.name}</Label>
-                              <p className="text-sm text-muted-foreground">HSL: {panel.value}</p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              <TabsContent value="sidebar" className="space-y-6">
-                <Card className="card-enhanced">
-                  <CardHeader>
-                    <CardTitle>Sidebar Background</CardTitle>
-                    <CardDescription>
-                      Customize the sidebar color for {themeMode} theme
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {(themeMode === 'dark' ? sidebarColorOptions : sidebarLightColorOptions).map((sidebar) => (
-                        <div
-                          key={sidebar.id}
-                          className={`relative p-6 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:scale-105 ${
-                            selectedSidebarBg === sidebar.id
-                              ? 'border-primary shadow-lg shadow-primary/20'
-                              : 'border-border hover:border-primary/50'
-                          }`}
-                          onClick={() => handleSidebarBgChange(sidebar.id)}
-                        >
-                          <div className="flex items-center gap-4">
-                            <div 
-                              className="w-12 h-12 rounded-lg border shadow-inner"
-                              style={{ backgroundColor: `hsl(${sidebar.value})` }}
-                            />
-                            <div>
-                              <Label className="font-medium text-base">{sidebar.name}</Label>
-                              <p className="text-sm text-muted-foreground">HSL: {sidebar.value}</p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-            </Tabs>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Action Buttons */}
             <div className="flex gap-4 pt-6">
