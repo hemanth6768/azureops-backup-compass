@@ -114,11 +114,30 @@ const panelBackgroundOptions = {
   ]
 };
 
+const sidebarColorOptions = [
+  { name: 'Default', id: 'default', value: '220 13% 10%' },
+  { name: 'Deep Blue', id: 'blue', value: '220 50% 12%' },
+  { name: 'Purple Dark', id: 'purple', value: '270 30% 15%' },
+  { name: 'Green Dark', id: 'green', value: '160 30% 12%' },
+  { name: 'Amber Dark', id: 'amber', value: '45 40% 15%' },
+  { name: 'Rose Dark', id: 'rose', value: '330 30% 15%' }
+];
+
+const sidebarLightColorOptions = [
+  { name: 'Clean White', id: 'light-white', value: '0 0% 100%' },
+  { name: 'Soft Blue', id: 'light-blue', value: '220 50% 98%' },
+  { name: 'Lavender', id: 'light-purple', value: '270 30% 97%' },
+  { name: 'Mint', id: 'light-green', value: '160 30% 98%' },
+  { name: 'Cream', id: 'light-amber', value: '45 40% 98%' },
+  { name: 'Blush', id: 'light-rose', value: '330 30% 98%' }
+];
+
 const Settings = () => {
   const [activeTheme, setActiveTheme] = useState('default');
   const [themeMode, setThemeMode] = useState('dark');
   const [selectedBackground, setSelectedBackground] = useState('dark');
   const [selectedPanelBg, setSelectedPanelBg] = useState('glass');
+  const [selectedSidebarBg, setSelectedSidebarBg] = useState('default');
   const { toast } = useToast();
 
   // Load saved settings on component mount
@@ -127,22 +146,26 @@ const Settings = () => {
     const savedMode = localStorage.getItem('themeMode') || 'dark';
     const savedBackground = localStorage.getItem('background') || 'dark';
     const savedPanelBg = localStorage.getItem('panelBackground') || 'glass';
+    const savedSidebarBg = localStorage.getItem('sidebarBackground') || 'default';
     
     setActiveTheme(savedTheme);
     setThemeMode(savedMode);
     setSelectedBackground(savedBackground);
     setSelectedPanelBg(savedPanelBg);
+    setSelectedSidebarBg(savedSidebarBg);
     
     // Apply the saved theme immediately
-    applyTheme(savedTheme, savedMode, savedBackground, savedPanelBg);
+    applyTheme(savedTheme, savedMode, savedBackground, savedPanelBg, savedSidebarBg);
   }, []);
 
-  const applyTheme = (themeId: string, mode: string, backgroundId: string, panelBgId: string) => {
+  const applyTheme = (themeId: string, mode: string, backgroundId: string, panelBgId: string, sidebarBgId: string) => {
     const theme = colorThemes.find(t => t.id === themeId);
     const background = backgroundOptions[mode as 'dark' | 'light']?.find(b => b.id === backgroundId);
     const panelBg = panelBackgroundOptions[mode as 'dark' | 'light']?.find(p => p.id === panelBgId);
+    const sidebarOptions = mode === 'dark' ? sidebarColorOptions : sidebarLightColorOptions;
+    const sidebarBg = sidebarOptions.find(s => s.id === sidebarBgId);
     
-    if (theme && background && panelBg) {
+    if (theme && background && panelBg && sidebarBg) {
       const root = document.documentElement;
       
       // Apply theme mode
@@ -159,47 +182,72 @@ const Settings = () => {
       root.style.setProperty('--card', panelBg.value);
       root.style.setProperty('--popover', panelBg.value);
       
-      // Apply mode-specific text colors
+      // Apply sidebar background
+      root.style.setProperty('--sidebar-background', sidebarBg.value);
+      
+      // Apply mode-specific colors
       if (mode === 'light') {
         root.style.setProperty('--foreground', '220 13% 15%');
         root.style.setProperty('--card-foreground', '220 13% 15%');
         root.style.setProperty('--popover-foreground', '220 13% 15%');
         root.style.setProperty('--muted-foreground', '220 13% 45%');
+        root.style.setProperty('--sidebar-foreground', '220 13% 20%');
+        root.style.setProperty('--sidebar-accent', '220 13% 95%');
+        root.style.setProperty('--sidebar-accent-foreground', '220 13% 15%');
+        root.style.setProperty('--sidebar-border', '220 13% 85%');
+        root.style.setProperty('--sidebar-hover', '220 13% 92%');
+        root.style.setProperty('--border', '220 13% 85%');
+        root.style.setProperty('--input', '220 13% 95%');
       } else {
         root.style.setProperty('--foreground', '220 13% 95%');
         root.style.setProperty('--card-foreground', '220 13% 95%');
         root.style.setProperty('--popover-foreground', '220 13% 95%');
         root.style.setProperty('--muted-foreground', '220 13% 65%');
+        root.style.setProperty('--sidebar-foreground', '220 13% 90%');
+        root.style.setProperty('--sidebar-accent', '220 13% 18%');
+        root.style.setProperty('--sidebar-accent-foreground', '220 13% 95%');
+        root.style.setProperty('--sidebar-border', '220 13% 20%');
+        root.style.setProperty('--sidebar-hover', '220 13% 15%');
+        root.style.setProperty('--border', '220 13% 20%');
+        root.style.setProperty('--input', '220 13% 18%');
       }
       
       // Update gradients
       root.style.setProperty('--gradient-primary', `linear-gradient(135deg, hsl(${theme.colors.primary} / 0.9), hsl(${theme.colors.primaryGlow} / 0.8))`);
+      root.style.setProperty('--gradient-sidebar', `linear-gradient(180deg, hsl(${sidebarBg.value} / 0.95), hsl(${sidebarBg.value} / 0.9))`);
     }
   };
 
   const handleThemeChange = (themeId: string) => {
     setActiveTheme(themeId);
-    applyTheme(themeId, themeMode, selectedBackground, selectedPanelBg);
+    applyTheme(themeId, themeMode, selectedBackground, selectedPanelBg, selectedSidebarBg);
   };
 
   const handleModeChange = (mode: string) => {
     setThemeMode(mode);
-    // Reset background and panel when switching modes
+    // Reset to defaults when switching modes
     const defaultBg = mode === 'dark' ? 'dark' : 'light';
     const defaultPanel = mode === 'dark' ? 'glass' : 'light-clean';
+    const defaultSidebar = mode === 'dark' ? 'default' : 'light-white';
     setSelectedBackground(defaultBg);
     setSelectedPanelBg(defaultPanel);
-    applyTheme(activeTheme, mode, defaultBg, defaultPanel);
+    setSelectedSidebarBg(defaultSidebar);
+    applyTheme(activeTheme, mode, defaultBg, defaultPanel, defaultSidebar);
   };
 
   const handleBackgroundChange = (backgroundId: string) => {
     setSelectedBackground(backgroundId);
-    applyTheme(activeTheme, themeMode, backgroundId, selectedPanelBg);
+    applyTheme(activeTheme, themeMode, backgroundId, selectedPanelBg, selectedSidebarBg);
   };
 
   const handlePanelBgChange = (panelBgId: string) => {
     setSelectedPanelBg(panelBgId);
-    applyTheme(activeTheme, themeMode, selectedBackground, panelBgId);
+    applyTheme(activeTheme, themeMode, selectedBackground, panelBgId, selectedSidebarBg);
+  };
+
+  const handleSidebarBgChange = (sidebarBgId: string) => {
+    setSelectedSidebarBg(sidebarBgId);
+    applyTheme(activeTheme, themeMode, selectedBackground, selectedPanelBg, sidebarBgId);
   };
 
   const saveSettings = () => {
@@ -207,6 +255,7 @@ const Settings = () => {
     localStorage.setItem('themeMode', themeMode);
     localStorage.setItem('background', selectedBackground);
     localStorage.setItem('panelBackground', selectedPanelBg);
+    localStorage.setItem('sidebarBackground', selectedSidebarBg);
     
     toast({
       title: "Settings Saved",
@@ -219,7 +268,8 @@ const Settings = () => {
     setThemeMode('dark');
     setSelectedBackground('dark');
     setSelectedPanelBg('glass');
-    applyTheme('default', 'dark', 'dark', 'glass');
+    setSelectedSidebarBg('default');
+    applyTheme('default', 'dark', 'dark', 'glass', 'default');
     
     toast({
       title: "Reset to Default",
@@ -260,7 +310,7 @@ const Settings = () => {
             </div>
 
             <Tabs defaultValue="mode" className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
+              <TabsList className="grid w-full grid-cols-5">
                 <TabsTrigger value="mode">
                   <Monitor className="w-4 h-4 mr-2" />
                   Theme Mode
@@ -276,6 +326,10 @@ const Settings = () => {
                 <TabsTrigger value="panels">
                   <SettingsIcon className="w-4 h-4 mr-2" />
                   Panels
+                </TabsTrigger>
+                <TabsTrigger value="sidebar">
+                  <SettingsIcon className="w-4 h-4 mr-2" />
+                  Sidebar
                 </TabsTrigger>
               </TabsList>
 
@@ -432,6 +486,43 @@ const Settings = () => {
                             <div>
                               <Label className="font-medium text-base">{panel.name}</Label>
                               <p className="text-sm text-muted-foreground">HSL: {panel.value}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="sidebar" className="space-y-6">
+                <Card className="card-enhanced">
+                  <CardHeader>
+                    <CardTitle>Sidebar Background</CardTitle>
+                    <CardDescription>
+                      Customize the sidebar color for {themeMode} theme
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {(themeMode === 'dark' ? sidebarColorOptions : sidebarLightColorOptions).map((sidebar) => (
+                        <div
+                          key={sidebar.id}
+                          className={`relative p-6 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:scale-105 ${
+                            selectedSidebarBg === sidebar.id
+                              ? 'border-primary shadow-lg shadow-primary/20'
+                              : 'border-border hover:border-primary/50'
+                          }`}
+                          onClick={() => handleSidebarBgChange(sidebar.id)}
+                        >
+                          <div className="flex items-center gap-4">
+                            <div 
+                              className="w-12 h-12 rounded-lg border shadow-inner"
+                              style={{ backgroundColor: `hsl(${sidebar.value})` }}
+                            />
+                            <div>
+                              <Label className="font-medium text-base">{sidebar.name}</Label>
+                              <p className="text-sm text-muted-foreground">HSL: {sidebar.value}</p>
                             </div>
                           </div>
                         </div>
