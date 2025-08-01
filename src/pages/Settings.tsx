@@ -8,6 +8,12 @@ import { Settings as SettingsIcon, Palette, Monitor, Save } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
+// Theme modes
+const themeModes = [
+  { name: 'Dark Mode', id: 'dark', description: 'Modern dark theme with glassmorphism' },
+  { name: 'Light Mode', id: 'light', description: 'Clean light theme with subtle shadows' }
+];
+
 // Predefined color themes
 const colorThemes = [
   {
@@ -78,22 +84,39 @@ const colorThemes = [
   }
 ];
 
-const backgroundOptions = [
-  { name: 'Dark Glassmorphism', id: 'dark', value: '220 13% 9%' },
-  { name: 'Midnight Black', id: 'midnight', value: '220 20% 5%' },
-  { name: 'Deep Blue', id: 'deep-blue', value: '220 50% 8%' },
-  { name: 'Charcoal', id: 'charcoal', value: '0 0% 10%' }
-];
+const backgroundOptions = {
+  dark: [
+    { name: 'Dark Glassmorphism', id: 'dark', value: '220 13% 9%' },
+    { name: 'Midnight Black', id: 'midnight', value: '220 20% 5%' },
+    { name: 'Deep Blue', id: 'deep-blue', value: '220 50% 8%' },
+    { name: 'Charcoal', id: 'charcoal', value: '0 0% 10%' }
+  ],
+  light: [
+    { name: 'Pure White', id: 'light', value: '0 0% 100%' },
+    { name: 'Soft Gray', id: 'light-gray', value: '220 13% 95%' },
+    { name: 'Warm White', id: 'warm', value: '40 10% 98%' },
+    { name: 'Cool White', id: 'cool', value: '220 20% 98%' }
+  ]
+};
 
-const panelBackgroundOptions = [
-  { name: 'Glass Effect', id: 'glass', value: '220 13% 12%' },
-  { name: 'Semi Transparent', id: 'semi', value: '220 13% 15%' },
-  { name: 'Solid Dark', id: 'solid', value: '220 13% 8%' },
-  { name: 'Elevated', id: 'elevated', value: '220 13% 18%' }
-];
+const panelBackgroundOptions = {
+  dark: [
+    { name: 'Glass Effect', id: 'glass', value: '220 13% 12%' },
+    { name: 'Semi Transparent', id: 'semi', value: '220 13% 15%' },
+    { name: 'Solid Dark', id: 'solid', value: '220 13% 8%' },
+    { name: 'Elevated', id: 'elevated', value: '220 13% 18%' }
+  ],
+  light: [
+    { name: 'Clean White', id: 'light-clean', value: '0 0% 100%' },
+    { name: 'Soft Gray', id: 'light-soft', value: '220 13% 98%' },
+    { name: 'Subtle Tint', id: 'light-tint', value: '220 10% 96%' },
+    { name: 'Paper White', id: 'light-paper', value: '40 10% 99%' }
+  ]
+};
 
 const Settings = () => {
   const [activeTheme, setActiveTheme] = useState('default');
+  const [themeMode, setThemeMode] = useState('dark');
   const [selectedBackground, setSelectedBackground] = useState('dark');
   const [selectedPanelBg, setSelectedPanelBg] = useState('glass');
   const { toast } = useToast();
@@ -101,24 +124,29 @@ const Settings = () => {
   // Load saved settings on component mount
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') || 'default';
+    const savedMode = localStorage.getItem('themeMode') || 'dark';
     const savedBackground = localStorage.getItem('background') || 'dark';
     const savedPanelBg = localStorage.getItem('panelBackground') || 'glass';
     
     setActiveTheme(savedTheme);
+    setThemeMode(savedMode);
     setSelectedBackground(savedBackground);
     setSelectedPanelBg(savedPanelBg);
     
     // Apply the saved theme immediately
-    applyTheme(savedTheme, savedBackground, savedPanelBg);
+    applyTheme(savedTheme, savedMode, savedBackground, savedPanelBg);
   }, []);
 
-  const applyTheme = (themeId: string, backgroundId: string, panelBgId: string) => {
+  const applyTheme = (themeId: string, mode: string, backgroundId: string, panelBgId: string) => {
     const theme = colorThemes.find(t => t.id === themeId);
-    const background = backgroundOptions.find(b => b.id === backgroundId);
-    const panelBg = panelBackgroundOptions.find(p => p.id === panelBgId);
+    const background = backgroundOptions[mode as 'dark' | 'light']?.find(b => b.id === backgroundId);
+    const panelBg = panelBackgroundOptions[mode as 'dark' | 'light']?.find(p => p.id === panelBgId);
     
     if (theme && background && panelBg) {
       const root = document.documentElement;
+      
+      // Apply theme mode
+      document.documentElement.classList.toggle('dark', mode === 'dark');
       
       // Apply primary colors
       root.style.setProperty('--primary', theme.colors.primary);
@@ -131,6 +159,19 @@ const Settings = () => {
       root.style.setProperty('--card', panelBg.value);
       root.style.setProperty('--popover', panelBg.value);
       
+      // Apply mode-specific text colors
+      if (mode === 'light') {
+        root.style.setProperty('--foreground', '220 13% 15%');
+        root.style.setProperty('--card-foreground', '220 13% 15%');
+        root.style.setProperty('--popover-foreground', '220 13% 15%');
+        root.style.setProperty('--muted-foreground', '220 13% 45%');
+      } else {
+        root.style.setProperty('--foreground', '220 13% 95%');
+        root.style.setProperty('--card-foreground', '220 13% 95%');
+        root.style.setProperty('--popover-foreground', '220 13% 95%');
+        root.style.setProperty('--muted-foreground', '220 13% 65%');
+      }
+      
       // Update gradients
       root.style.setProperty('--gradient-primary', `linear-gradient(135deg, hsl(${theme.colors.primary} / 0.9), hsl(${theme.colors.primaryGlow} / 0.8))`);
     }
@@ -138,21 +179,32 @@ const Settings = () => {
 
   const handleThemeChange = (themeId: string) => {
     setActiveTheme(themeId);
-    applyTheme(themeId, selectedBackground, selectedPanelBg);
+    applyTheme(themeId, themeMode, selectedBackground, selectedPanelBg);
+  };
+
+  const handleModeChange = (mode: string) => {
+    setThemeMode(mode);
+    // Reset background and panel when switching modes
+    const defaultBg = mode === 'dark' ? 'dark' : 'light';
+    const defaultPanel = mode === 'dark' ? 'glass' : 'light-clean';
+    setSelectedBackground(defaultBg);
+    setSelectedPanelBg(defaultPanel);
+    applyTheme(activeTheme, mode, defaultBg, defaultPanel);
   };
 
   const handleBackgroundChange = (backgroundId: string) => {
     setSelectedBackground(backgroundId);
-    applyTheme(activeTheme, backgroundId, selectedPanelBg);
+    applyTheme(activeTheme, themeMode, backgroundId, selectedPanelBg);
   };
 
   const handlePanelBgChange = (panelBgId: string) => {
     setSelectedPanelBg(panelBgId);
-    applyTheme(activeTheme, selectedBackground, panelBgId);
+    applyTheme(activeTheme, themeMode, selectedBackground, panelBgId);
   };
 
   const saveSettings = () => {
     localStorage.setItem('theme', activeTheme);
+    localStorage.setItem('themeMode', themeMode);
     localStorage.setItem('background', selectedBackground);
     localStorage.setItem('panelBackground', selectedPanelBg);
     
@@ -164,9 +216,10 @@ const Settings = () => {
 
   const resetToDefault = () => {
     setActiveTheme('default');
+    setThemeMode('dark');
     setSelectedBackground('dark');
     setSelectedPanelBg('glass');
-    applyTheme('default', 'dark', 'glass');
+    applyTheme('default', 'dark', 'dark', 'glass');
     
     toast({
       title: "Reset to Default",
@@ -206,14 +259,18 @@ const Settings = () => {
               </div>
             </div>
 
-            <Tabs defaultValue="appearance" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
+            <Tabs defaultValue="mode" className="w-full">
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="mode">
+                  <Monitor className="w-4 h-4 mr-2" />
+                  Theme Mode
+                </TabsTrigger>
                 <TabsTrigger value="appearance">
                   <Palette className="w-4 h-4 mr-2" />
-                  Appearance
+                  Colors
                 </TabsTrigger>
                 <TabsTrigger value="background">
-                  <Monitor className="w-4 h-4 mr-2" />
+                  <SettingsIcon className="w-4 h-4 mr-2" />
                   Background
                 </TabsTrigger>
                 <TabsTrigger value="panels">
@@ -221,6 +278,42 @@ const Settings = () => {
                   Panels
                 </TabsTrigger>
               </TabsList>
+
+              <TabsContent value="mode" className="space-y-6">
+                <Card className="card-enhanced">
+                  <CardHeader>
+                    <CardTitle>Theme Mode</CardTitle>
+                    <CardDescription>
+                      Choose between light and dark theme modes
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {themeModes.map((mode) => (
+                        <div
+                          key={mode.id}
+                          className={`relative p-6 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:scale-105 ${
+                            themeMode === mode.id
+                              ? 'border-primary shadow-lg shadow-primary/20'
+                              : 'border-border hover:border-primary/50'
+                          }`}
+                          onClick={() => handleModeChange(mode.id)}
+                        >
+                          <div className="flex items-center gap-4">
+                            <div className={`w-12 h-12 rounded-lg border shadow-inner ${
+                              mode.id === 'dark' ? 'bg-slate-900' : 'bg-white'
+                            }`} />
+                            <div>
+                              <Label className="font-medium text-base">{mode.name}</Label>
+                              <p className="text-sm text-muted-foreground">{mode.description}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
 
               <TabsContent value="appearance" className="space-y-6">
                 <Card className="card-enhanced">
@@ -279,12 +372,12 @@ const Settings = () => {
                   <CardHeader>
                     <CardTitle>Background Colors</CardTitle>
                     <CardDescription>
-                      Select the main background color for your dashboard
+                      Select the main background color for your {themeMode} theme
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {backgroundOptions.map((bg) => (
+                      {backgroundOptions[themeMode as 'dark' | 'light'].map((bg) => (
                         <div
                           key={bg.id}
                           className={`relative p-6 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:scale-105 ${
@@ -316,12 +409,12 @@ const Settings = () => {
                   <CardHeader>
                     <CardTitle>Panel Background</CardTitle>
                     <CardDescription>
-                      Customize the background of cards, modals, and other panels
+                      Customize the background of cards, modals, and other panels for {themeMode} theme
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {panelBackgroundOptions.map((panel) => (
+                      {panelBackgroundOptions[themeMode as 'dark' | 'light'].map((panel) => (
                         <div
                           key={panel.id}
                           className={`relative p-6 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:scale-105 ${
