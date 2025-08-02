@@ -79,12 +79,6 @@ All colors MUST be HSL. Enhanced visual hierarchy and contrast.
     --sidebar-border: 220 13% 20%;
     --sidebar-ring: 217 91% 60%;
     --sidebar-hover: 220 13% 15%;
-
-    /* Table design with glass effect */
-    --table-header: 220 13% 12%;
-    --table-header-foreground: 220 13% 95%;
-    --table-row-hover: 220 13% 15%;
-    --table-border: 220 13% 20%;
   }
 
   .dark {
@@ -135,12 +129,6 @@ All colors MUST be HSL. Enhanced visual hierarchy and contrast.
     --sidebar-border: 220 13% 18%;
     --sidebar-ring: 217 91% 65%;
     --sidebar-hover: 220 13% 12%;
-
-    /* Enhanced dark table tokens */
-    --table-header: 220 13% 8%;
-    --table-header-foreground: 220 13% 98%;
-    --table-row-hover: 220 13% 12%;
-    --table-border: 220 13% 18%;
   }
 }
 
@@ -212,16 +200,16 @@ All colors MUST be HSL. Enhanced visual hierarchy and contrast.
   }
 
   .table-header-enhanced {
-    background: var(--gradient-table-header);
+    background: linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--muted)/0.8) 100%);
     @apply glass-effect;
-    @apply text-table-header-foreground font-semibold text-sm;
-    @apply border-b border-table-border/50;
+    @apply text-foreground font-semibold text-sm;
+    @apply border-b border-border/50;
   }
 
   .table-row-enhanced {
     @apply transition-all duration-200 ease-in-out;
-    @apply hover:bg-table-row-hover/80 hover:backdrop-blur-sm;
-    @apply border-b border-table-border/30;
+    @apply hover:bg-muted/50 hover:backdrop-blur-sm;
+    @apply border-b border-border/30;
   }
 
   .table-cell-enhanced {
