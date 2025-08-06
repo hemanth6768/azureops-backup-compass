@@ -3,6 +3,7 @@ import { AppSidebar } from '@/components/AppSidebar';
 import StatCard from '@/components/StatCard';
 import FilterPanel from '@/components/FilterPanel';
 import VaultSummaryCards from '@/components/VaultSummaryCards';
+import LogManagementOverview from '@/components/LogManagementOverview';
 import { Database, Shield, Activity, AlertTriangle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { api, RecoveryVault } from '@/lib/api';
@@ -146,6 +147,11 @@ const Index = () => {
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-foreground mb-6">Vault Overview</h2>
               <VaultSummaryCards vaults={vaultData} vaultSummary={vaultSummary} />
+            </div>
+
+            {/* Log Management Overview */}
+            <div className="mb-8">
+              <LogManagementOverview />
             </div>
 
             {/* Filter Panel */}

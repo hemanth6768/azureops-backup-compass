@@ -58,6 +58,18 @@ export interface VMUsage {
   timeGenerated: string;
 }
 
+export interface LargeLogFile {
+  serverName: string;
+  databaseName: string;
+  fileName: string;
+  physicalPath: string;
+  fileType: string;
+  totalSize: string;
+  usedSpace: string;
+  freeSpace: string;
+  collectedAt: string;
+}
+
 interface VaultSummaryResponse {
   totalResourceGroups: number;
   locationStats: Array<{
@@ -188,6 +200,14 @@ export const api = {
     const response = await fetch(`${API_BASE_URL}/api/Monitoring/inactivevm/details?subscriptionName=${encodeURIComponent(subscriptionName)}`);
     if (!response.ok) {
       throw new Error(`Failed to fetch inactive VMs for subscription: ${subscriptionName}`);
+    }
+    return response.json();
+  },
+
+  async getLargeLogFiles(): Promise<LargeLogFile[]> {
+    const response = await fetch(`${API_BASE_URL}/api/Monitoring/large-log-files`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch large log files');
     }
     return response.json();
   },
