@@ -16,15 +16,7 @@ const SqlMonitoringPanel: React.FC = () => {
   ];
 
   return (
-    <section aria-labelledby="sql-monitoring-title">
-      <header className="mb-4">
-        <h2 id="sql-monitoring-title" className="text-2xl font-bold text-foreground">
-          SQL Server Monitoring Dashboard
-        </h2>
-        <p className="text-sm text-muted-foreground">
-          Centralized SQL monitoring modules with expandable tabs
-        </p>
-      </header>
+    <section aria-label="SQL Server Monitoring">
 
       <div className="w-full">
         <Tabs defaultValue={panels[0].value} className="w-full">
