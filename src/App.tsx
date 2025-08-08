@@ -10,6 +10,7 @@ import InactiveVMs from "./pages/InactiveVMs";
 import VMCpuUsage from "./pages/VMCpuUsage";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import SqlMonitoring from "./pages/SqlMonitoring";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/inactive-vms" element={<InactiveVMs />} />
           <Route path="/vm-cpu-usage" element={<VMCpuUsage />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/sql-monitoring" element={<SqlMonitoring />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
