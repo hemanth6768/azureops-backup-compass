@@ -1,5 +1,6 @@
 import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
+import LogManagementOverview from '@/components/LogManagementOverview';
 import SqlMonitoringPanel from '@/components/SqlMonitoringPanel';
 import { Database } from 'lucide-react';
 import { useEffect } from 'react';
@@ -33,6 +34,8 @@ const SqlMonitoring = () => {
               <h1 className="text-3xl font-bold text-foreground">SQL Server Monitoring Dashboard</h1>
               <p className="text-muted-foreground mt-2">Explore modules like Log Management and more</p>
             </div>
+
+            <LogManagementOverview />
 
             <SqlMonitoringPanel />
           </main>
