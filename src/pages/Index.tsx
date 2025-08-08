@@ -3,7 +3,7 @@ import { AppSidebar } from '@/components/AppSidebar';
 import StatCard from '@/components/StatCard';
 import FilterPanel from '@/components/FilterPanel';
 import VaultSummaryCards from '@/components/VaultSummaryCards';
-import LogManagementOverview from '@/components/LogManagementOverview';
+import SqlMonitoringPanel from '@/components/SqlMonitoringPanel';
 import { Database, Shield, Activity, AlertTriangle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { api, RecoveryVault } from '@/lib/api';
@@ -149,9 +149,9 @@ const Index = () => {
               <VaultSummaryCards vaults={vaultData} vaultSummary={vaultSummary} />
             </div>
 
-            {/* Log Management Overview */}
+            {/* SQL Server Monitoring Dashboard */}
             <div className="mb-8">
-              <LogManagementOverview />
+              <SqlMonitoringPanel />
             </div>
 
             {/* Filter Panel */}
