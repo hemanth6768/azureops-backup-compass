@@ -11,6 +11,8 @@ import VMCpuUsage from "./pages/VMCpuUsage";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import SqlMonitoring from "./pages/SqlMonitoring";
+import SqlLogManagement from "./pages/SqlLogManagement";
+import SqlCostThresholdParallelism from "./pages/SqlCostThresholdParallelism";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +30,8 @@ const App = () => (
           <Route path="/vm-cpu-usage" element={<VMCpuUsage />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/sql-monitoring" element={<SqlMonitoring />} />
+          <Route path="/sql-monitoring/log-management" element={<SqlLogManagement />} />
+          <Route path="/sql-monitoring/cost-threshold-parallelism" element={<SqlCostThresholdParallelism />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

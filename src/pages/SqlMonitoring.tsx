@@ -1,14 +1,16 @@
 import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
 import LogManagementOverview from '@/components/LogManagementOverview';
-import SqlMonitoringPanel from '@/components/SqlMonitoringPanel';
-import { Database } from 'lucide-react';
+import StatCard from '@/components/StatCard';
+import { Database, FileText, Sliders } from 'lucide-react';
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const SqlMonitoring = () => {
   useEffect(() => {
     document.title = 'SQL Server Monitoring Dashboard | AzureOps';
   }, []);
+  const navigate = useNavigate();
 
   return (
     <SidebarProvider>
@@ -37,7 +39,24 @@ const SqlMonitoring = () => {
 
             <LogManagementOverview />
 
-            <SqlMonitoringPanel />
+            <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <StatCard
+                title="Log Management"
+                value="Open"
+                description="View SQL files usage and health"
+                icon={FileText}
+                clickable
+                onClick={() => navigate('/sql-monitoring/log-management')}
+              />
+              <StatCard
+                title="Cost Threshold for Parallelism"
+                value="Open"
+                description="Analyze and optimize parallelism settings"
+                icon={Sliders}
+                clickable
+                onClick={() => navigate('/sql-monitoring/cost-threshold-parallelism')}
+              />
+            </section>
           </main>
         </SidebarInset>
       </div>
