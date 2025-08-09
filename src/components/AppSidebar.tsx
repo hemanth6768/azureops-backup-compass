@@ -9,6 +9,7 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarRail,
   useSidebar,
 } from '@/components/ui/sidebar';
 
@@ -19,7 +20,7 @@ const items = [
 ];
 
 export function AppSidebar() {
-  const { state } = useSidebar();
+  const { state, setOpen } = useSidebar();
   const location = useLocation();
   const currentPath = location.pathname;
 
@@ -27,12 +28,11 @@ export function AppSidebar() {
   const isExpanded = items.some((i) => isActive(i.url));
 
   return (
-    <Sidebar 
-      className={`sidebar-enhanced transition-all duration-300 ${
-        state === 'collapsed' ? 'w-16' : 'w-64'
-      }`} 
-      collapsible="icon"
+    <Sidebar
+      className="sidebar-enhanced transition-all duration-300"
+      collapsible="offcanvas"
     >
+      <SidebarRail />
       <SidebarContent className="p-2">
         <SidebarGroup>
           <SidebarGroupLabel className="px-4 py-3 text-sm font-semibold text-sidebar-foreground/80 tracking-wider uppercase">
@@ -52,6 +52,7 @@ export function AppSidebar() {
                     <NavLink 
                       to={item.url} 
                       end
+                      onClick={() => { if (state === 'collapsed') setOpen(true); }}
                       className="flex items-center gap-3 w-full transition-colors duration-200"
                     >
                       <item.icon className={`h-5 w-5 flex-shrink-0 transition-all duration-200 ${
