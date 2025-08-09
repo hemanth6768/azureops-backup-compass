@@ -13,12 +13,8 @@ import {
 } from '@/components/ui/sidebar';
 
 const items = [
-  { title: 'Dashboard', url: '/', icon: BarChart3 },
-  { title: 'Recovery Vaults', url: '/recovery-vaults', icon: Database },
-  { title: 'Backup Items', url: '/backup-items', icon: Cloud },
-  { title: 'Inactive VMs', url: '/inactive-vms', icon: AlertTriangle },
-  { title: 'Azure VM CPU Usage', url: '/vm-cpu-usage', icon: Cpu },
-  { title: 'SQL Monitoring', url: '/sql-monitoring', icon: Server },
+  { title: 'AzureOps Dashboard', url: '/', icon: BarChart3 },
+  { title: 'SQL Server Monitoring', url: '/sql-monitoring', icon: Server },
   { title: 'Settings', url: '/settings', icon: Settings },
 ];
 
@@ -40,7 +36,7 @@ export function AppSidebar() {
       <SidebarContent className="p-2">
         <SidebarGroup>
           <SidebarGroupLabel className="px-4 py-3 text-sm font-semibold text-sidebar-foreground/80 tracking-wider uppercase">
-            {state === 'collapsed' ? 'AOM' : 'AzureOps Monitor'}
+            {state === 'collapsed' ? 'ASM' : 'Azure & Server Monitor'}
           </SidebarGroupLabel>
           <SidebarGroupContent className="mt-2">
             <SidebarMenu className="space-y-1">

@@ -4,7 +4,7 @@ import StatCard from '@/components/StatCard';
 import FilterPanel from '@/components/FilterPanel';
 import VaultSummaryCards from '@/components/VaultSummaryCards';
 
-import { Database, Shield, Activity, AlertTriangle } from 'lucide-react';
+import { Database, Shield, Activity, AlertTriangle, Cloud, Cpu } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { api, RecoveryVault } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
@@ -196,6 +196,41 @@ const Index = () => {
                 clickable={true}
               />
             </div>
+
+            <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <StatCard
+                title="Recovery Vaults"
+                value="Open"
+                description="Browse all vaults"
+                icon={Database}
+                clickable
+                onClick={() => navigate('/recovery-vaults')}
+              />
+              <StatCard
+                title="Backup Items"
+                value="Open"
+                description="Azure VM backup items"
+                icon={Cloud}
+                clickable
+                onClick={() => navigate('/backup-items')}
+              />
+              <StatCard
+                title="Inactive VMs"
+                value="Open"
+                description="VMs requiring backup attention"
+                icon={AlertTriangle}
+                clickable
+                onClick={handleInactiveVMsClick}
+              />
+              <StatCard
+                title="Azure VM CPU Usage"
+                value="Open"
+                description="Analyze VM CPU usage"
+                icon={Cpu}
+                clickable
+                onClick={() => navigate('/vm-cpu-usage')}
+              />
+            </section>
           </main>
         </SidebarInset>
       </div>
