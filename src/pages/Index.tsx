@@ -197,6 +197,10 @@ const Index = () => {
               />
             </div>
 
+            <div className="mb-4">
+              <h2 className="text-2xl font-bold text-foreground">Explore AzureOps monitoring modules</h2>
+            </div>
+
             <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <StatCard
                 title="Recovery Vaults"
