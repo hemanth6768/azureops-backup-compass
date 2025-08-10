@@ -3,6 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
+import { api, SqlServerHost } from "@/lib/api";
 
 interface FileRecord {
   serverName: string;
@@ -16,7 +17,7 @@ interface FileRecord {
   collectedAt: string;
 }
 
-const SERVER = "rfms-host-sql-R"; // as provided
+
 
 const LogManagementFilesTable: React.FC = () => {
   const { toast } = useToast();
@@ -24,15 +25,19 @@ const LogManagementFilesTable: React.FC = () => {
   const [query, setQuery] = useState("");
   const [data, setData] = useState<FileRecord[]>([]);
   const [loading, setLoading] = useState(false);
+  const [servers, setServers] = useState<SqlServerHost[]>([]);
+  const [selectedServer, setSelectedServer] = useState<string>("");
+  const [serversLoading, setServersLoading] = useState(false);
 
   const fetchData = useCallback(async () => {
+    if (!selectedServer) {
+      setData([]);
+      return;
+    }
     try {
       setLoading(true);
-      const url = `http://localhost:33411/api/Monitoring/server/${SERVER}?fileType=${fileType}`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(`Request failed: ${res.status}`);
-      const json: FileRecord[] = await res.json();
-      setData(Array.isArray(json) ? json : []);
+      const json = await api.getServerFiles(selectedServer, fileType);
+      setData(Array.isArray(json) ? (json as unknown as FileRecord[]) : []);
     } catch (error: any) {
       toast({
         title: "Failed to load SQL files",
@@ -42,7 +47,23 @@ const LogManagementFilesTable: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [fileType, toast]);
+  }, [fileType, selectedServer, toast]);
+
+  useEffect(() => {
+    const loadServers = async () => {
+      setServersLoading(true);
+      try {
+        const list = await api.getSqlServers();
+        const filtered = list.filter((s) => (s.tag ?? "").toUpperCase() === "HOST-SQL");
+        setServers(filtered);
+      } catch (error: any) {
+        toast({ title: "Failed to load servers", description: error?.message ?? "Unknown error", variant: "destructive" });
+      } finally {
+        setServersLoading(false);
+      }
+    };
+    loadServers();
+  }, []);
 
   useEffect(() => {
     fetchData();
@@ -68,15 +89,31 @@ const LogManagementFilesTable: React.FC = () => {
     <section aria-label="SQL Server log files">
       <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div className="flex gap-2 items-center">
-          <div className="min-w-[180px]">
+          <div className="min-w-[160px]">
             <label className="block text-xs text-muted-foreground mb-1">File type</label>
-            <Select value={fileType} onValueChange={(v) => setFileType(v as "log" | "row")}> 
+            <Select value={fileType} onValueChange={(v) => setFileType(v as "log" | "row")}>
               <SelectTrigger aria-label="Select file type">
                 <SelectValue placeholder="Select type" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="row">row</SelectItem>
                 <SelectItem value="log">log</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="min-w-[220px]">
+            <label className="block text-xs text-muted-foreground mb-1">Server</label>
+            <Select value={selectedServer} onValueChange={(v) => setSelectedServer(v)}>
+              <SelectTrigger aria-label="Select SQL Server">
+                <SelectValue placeholder={serversLoading ? "Loading servers..." : "Select SQL Server (HOST-SQL)"} />
+              </SelectTrigger>
+              <SelectContent>
+                {servers.map((s) => (
+                  <SelectItem key={s.serverName} value={s.serverName}>
+                    {s.serverName}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

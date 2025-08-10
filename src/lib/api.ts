@@ -237,4 +237,14 @@ export const api = {
     }
     return response.json();
   },
+
+  async getServerFiles(serverName: string, fileType: "log" | "row"): Promise<LargeLogFile[]> {
+    const response = await fetch(
+      `${API_BASE_URL}/api/Monitoring/server/${encodeURIComponent(serverName)}?fileType=${encodeURIComponent(fileType)}`
+    );
+    if (!response.ok) {
+      throw new Error(`Failed to fetch ${fileType} files for server: ${serverName}`);
+    }
+    return response.json();
+  },
 };
