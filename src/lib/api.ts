@@ -70,6 +70,17 @@ export interface LargeLogFile {
   collectedAt: string;
 }
 
+export interface SqlServerHost {
+  serverName: string;
+  ip: string;
+  tag: string;
+}
+
+export interface DatabaseSize {
+  databaseName: string;
+  size: string;
+}
+
 interface VaultSummaryResponse {
   totalResourceGroups: number;
   locationStats: Array<{
@@ -77,7 +88,6 @@ interface VaultSummaryResponse {
     vaultCount: number;
   }>;
 }
-
 export const api = {
   async getVaultSummary(subscriptionName?: string): Promise<VaultSummaryResponse> {
     const url = subscriptionName 
@@ -208,6 +218,22 @@ export const api = {
     const response = await fetch(`${API_BASE_URL}/api/Monitoring/large-log-files`);
     if (!response.ok) {
       throw new Error('Failed to fetch large log files');
+    }
+    return response.json();
+  },
+
+  async getSqlServers(): Promise<SqlServerHost[]> {
+    const response = await fetch(`${API_BASE_URL}/api/Database/getallips`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch SQL servers');
+    }
+    return response.json();
+  },
+
+  async getDatabaseSizes(serverName: string): Promise<DatabaseSize[]> {
+    const response = await fetch(`${API_BASE_URL}/api/SQLServer/databasesizes/${encodeURIComponent(serverName)}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch database sizes for server: ${serverName}`);
     }
     return response.json();
   },

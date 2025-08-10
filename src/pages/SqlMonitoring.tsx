@@ -1,6 +1,7 @@
 import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
 import LogManagementOverview from '@/components/LogManagementOverview';
+import DatabaseSizePanel from '@/components/DatabaseSizePanel';
 import StatCard from '@/components/StatCard';
 import { Database, FileText, Sliders } from 'lucide-react';
 import { useEffect } from 'react';
@@ -38,6 +39,8 @@ const SqlMonitoring = () => {
             </div>
 
             <LogManagementOverview />
+
+            <DatabaseSizePanel />
 
             <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <StatCard
