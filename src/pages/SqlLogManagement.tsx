@@ -3,6 +3,7 @@ import { AppSidebar } from '@/components/AppSidebar';
 import LogManagementFilesTable from '@/components/LogManagementFilesTable';
 import { Database, FileText } from 'lucide-react';
 import { useEffect } from 'react';
+import BackButton from '@/components/BackButton';
 
 const SqlLogManagement = () => {
   useEffect(() => {
@@ -25,6 +26,9 @@ const SqlLogManagement = () => {
                 <h1 className="text-lg font-semibold">Log Management</h1>
                 <p className="text-xs text-muted-foreground">Detailed files view</p>
               </div>
+            </div>
+            <div className="ml-auto">
+              <BackButton to="/sql-monitoring" label="Back to SQL Monitoring" />
             </div>
           </header>
 

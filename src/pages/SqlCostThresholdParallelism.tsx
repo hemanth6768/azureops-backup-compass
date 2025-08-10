@@ -3,6 +3,7 @@ import { AppSidebar } from '@/components/AppSidebar';
 import { Sliders } from 'lucide-react';
 import { useEffect } from 'react';
 import { Card, CardContent, CardTitle, CardDescription } from '@/components/ui/card';
+import BackButton from '@/components/BackButton';
 
 const SqlCostThresholdParallelism = () => {
   useEffect(() => {
@@ -25,6 +26,9 @@ const SqlCostThresholdParallelism = () => {
                 <h1 className="text-lg font-semibold">Cost Threshold for Parallelism</h1>
                 <p className="text-xs text-muted-foreground">Detailed view</p>
               </div>
+            </div>
+            <div className="ml-auto">
+              <BackButton to="/sql-monitoring" label="Back to SQL Monitoring" />
             </div>
           </header>
 

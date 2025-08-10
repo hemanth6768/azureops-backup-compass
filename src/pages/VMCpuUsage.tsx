@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Loader2, Cpu } from 'lucide-react';
 import { api, VMUsage } from '@/lib/api';
 import { toast } from 'sonner';
+import BackButton from '@/components/BackButton';
 
 const VMCpuUsage = () => {
   const [selectedSubscription, setSelectedSubscription] = useState<string>('all');
@@ -79,6 +80,9 @@ const VMCpuUsage = () => {
             <div className="flex items-center gap-2">
               <Cpu className="h-6 w-6" />
               <h1 className="text-xl font-semibold">Azure VM CPU Usage</h1>
+            </div>
+            <div className="ml-auto">
+              <BackButton to="/" label="Back to Dashboard" />
             </div>
           </header>
 

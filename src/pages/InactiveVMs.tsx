@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
+import BackButton from '@/components/BackButton';
 
 const InactiveVMs = () => {
   const [inactiveVMs, setInactiveVMs] = useState<BackupItem[]>([]);
@@ -130,6 +131,9 @@ const InactiveVMs = () => {
                 <h1 className="text-lg font-semibold">Inactive VMs</h1>
                 <p className="text-xs text-muted-foreground">VMs requiring backup attention</p>
               </div>
+            </div>
+            <div className="ml-auto">
+              <BackButton to="/" label="Back to Dashboard" />
             </div>
           </header>
       

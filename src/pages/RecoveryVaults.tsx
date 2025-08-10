@@ -9,6 +9,7 @@ import { api, RecoveryVault } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
 import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
+import BackButton from '@/components/BackButton';
 
 const RecoveryVaults = () => {
   const [vaults, setVaults] = useState<RecoveryVault[]>([]);
@@ -130,6 +131,9 @@ const RecoveryVaults = () => {
                 <h1 className="text-lg font-semibold">Recovery Vaults</h1>
                 <p className="text-xs text-muted-foreground">Azure Recovery Service Vaults</p>
               </div>
+            </div>
+            <div className="ml-auto">
+              <BackButton to="/" label="Back to Dashboard" />
             </div>
           </header>
       

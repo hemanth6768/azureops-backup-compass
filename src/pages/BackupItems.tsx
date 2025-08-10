@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { RefreshCw, Search, Database, Download, Cloud } from 'lucide-react';
 import { format } from 'date-fns';
+import BackButton from '@/components/BackButton';
 
 const BackupItems = () => {
   const [backupItems, setBackupItems] = useState<BackupItem[]>([]);
@@ -182,6 +183,9 @@ const BackupItems = () => {
                 <h1 className="text-lg font-semibold">Backup Items</h1>
                 <p className="text-xs text-muted-foreground">Azure VM backup items management</p>
               </div>
+            </div>
+            <div className="ml-auto">
+              <BackButton to="/" label="Back to Dashboard" />
             </div>
           </header>
       
