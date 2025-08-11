@@ -5,7 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { AlertTriangle, Database, HardDrive } from 'lucide-react';
 import { api, LargeLogFile } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
-
+import { ScrollArea } from '@/components/ui/scroll-area';
 const LogManagementOverview = () => {
   const [logFiles, setLogFiles] = useState<LargeLogFile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -88,42 +88,44 @@ const LogManagementOverview = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {logFiles.map((logFile, index) => (
-          <Card key={index} className="card-enhanced">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium flex items-center space-x-2">
-                <Database className="w-4 h-4 text-primary" />
-                <span className="truncate">{logFile.serverName}</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-muted-foreground">Database:</span>
-                  <span className="text-sm font-medium text-foreground truncate max-w-[120px]">
-                    {logFile.databaseName}
-                  </span>
+      <ScrollArea className="max-h-[28rem] pr-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {logFiles.map((logFile, index) => (
+            <Card key={index} className="card-enhanced">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium flex items-center space-x-2">
+                  <Database className="w-4 h-4 text-primary" />
+                  <span className="truncate">{logFile.serverName}</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-muted-foreground">Database:</span>
+                    <span className="text-sm font-medium text-foreground truncate max-w-[120px]">
+                      {logFile.databaseName}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-muted-foreground">Total Size:</span>
+                    <Badge variant={getSizeVariant(logFile.totalSize)} className="text-xs">
+                      {logFile.totalSize}
+                    </Badge>
+                  </div>
+
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-muted-foreground">Free Space:</span>
+                    <span className="text-sm font-medium text-foreground">
+                      {logFile.freeSpace}
+                    </span>
+                  </div>
                 </div>
-                
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-muted-foreground">Total Size:</span>
-                  <Badge variant={getSizeVariant(logFile.totalSize)} className="text-xs">
-                    {logFile.totalSize}
-                  </Badge>
-                </div>
-                
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-muted-foreground">Free Space:</span>
-                  <span className="text-sm font-medium text-foreground">
-                    {logFile.freeSpace}
-                  </span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </ScrollArea>
     </div>
   );
 };
