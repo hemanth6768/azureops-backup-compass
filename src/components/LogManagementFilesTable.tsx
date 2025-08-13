@@ -2,8 +2,10 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { api, SqlServerHost } from "@/lib/api";
+import { Minimize2 } from "lucide-react";
 
 interface FileRecord {
   serverName: string;
@@ -17,8 +19,6 @@ interface FileRecord {
   collectedAt: string;
 }
 
-
-
 const LogManagementFilesTable: React.FC = () => {
   const { toast } = useToast();
   const [fileType, setFileType] = useState<"log" | "row">("log");
@@ -28,6 +28,14 @@ const LogManagementFilesTable: React.FC = () => {
   const [servers, setServers] = useState<SqlServerHost[]>([]);
   const [selectedServer, setSelectedServer] = useState<string>("");
   const [serversLoading, setServersLoading] = useState(false);
+
+  const handleShrink = (record: FileRecord) => {
+    toast({
+      title: "Shrink operation initiated",
+      description: `Shrinking ${record.fileName} on ${record.serverName}`,
+    });
+    console.log("Shrinking file:", record);
+  };
 
   const fetchData = useCallback(async () => {
     if (!selectedServer) {
@@ -142,7 +150,7 @@ const LogManagementFilesTable: React.FC = () => {
 
       <div className="mt-4">
         <div className="relative w-full overflow-x-auto rounded-lg border">
-          <Table className="min-w-[720px]">
+          <Table className="min-w-[800px]">
             <TableHeader>
               <TableRow>
                 <TableHead className="text-left">Server</TableHead>
@@ -152,6 +160,7 @@ const LogManagementFilesTable: React.FC = () => {
                 <TableHead className="text-left">Total size</TableHead>
                 <TableHead className="text-left">Used space</TableHead>
                 <TableHead className="text-left">Free space</TableHead>
+                <TableHead className="text-left">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -159,6 +168,7 @@ const LogManagementFilesTable: React.FC = () => {
                 [...Array(5)].map((_, i) => (
                   <TableRow key={i}>
                     <TableCell className="text-left">Loading…</TableCell>
+                    <TableCell className="text-left">—</TableCell>
                     <TableCell className="text-left">—</TableCell>
                     <TableCell className="text-left">—</TableCell>
                     <TableCell className="text-left">—</TableCell>
@@ -177,11 +187,22 @@ const LogManagementFilesTable: React.FC = () => {
                     <TableCell className="text-left">{row.totalSize}</TableCell>
                     <TableCell className="text-left">{row.usedSpace}</TableCell>
                     <TableCell className="text-left">{row.freeSpace}</TableCell>
+                    <TableCell className="text-left">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleShrink(row)}
+                        className="h-8 px-3 text-xs"
+                      >
+                        <Minimize2 className="w-3 h-3 mr-1" />
+                        Shrink
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-left text-muted-foreground">
+                  <TableCell colSpan={8} className="text-left text-muted-foreground">
                     No records found.
                   </TableCell>
                 </TableRow>
