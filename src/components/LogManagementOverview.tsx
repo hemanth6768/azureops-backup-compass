@@ -88,7 +88,7 @@ const LogManagementOverview = () => {
         </div>
       </div>
 
-      <ScrollArea className="max-h-[28rem]">
+      <ScrollArea className="max-h-[28rem] [&>[data-radix-scroll-area-scrollbar]]:bg-muted/50 [&>[data-radix-scroll-area-scrollbar]]:border-0 [&>[data-radix-scroll-area-scrollbar]]:w-3 [&>[data-radix-scroll-area-thumb]]:bg-muted-foreground/40 [&>[data-radix-scroll-area-thumb]]:rounded-md">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pr-4">
           {logFiles.map((logFile, index) => (
             <Card key={index} className="card-enhanced">
