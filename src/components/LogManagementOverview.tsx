@@ -5,7 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { AlertTriangle, Database, HardDrive } from 'lucide-react';
 import { api, LargeLogFile } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
-import { ScrollArea } from '@/components/ui/scroll-area';
+
 const LogManagementOverview = () => {
   const [logFiles, setLogFiles] = useState<LargeLogFile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -88,8 +88,8 @@ const LogManagementOverview = () => {
         </div>
       </div>
 
-      <ScrollArea className="max-h-[28rem] [&>[data-radix-scroll-area-scrollbar]]:bg-muted/50 [&>[data-radix-scroll-area-scrollbar]]:border-0 [&>[data-radix-scroll-area-scrollbar]]:w-3 [&>[data-radix-scroll-area-thumb]]:bg-muted-foreground/40 [&>[data-radix-scroll-area-thumb]]:rounded-md">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pr-4">
+      <div className="max-h-[28rem] overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-muted/30 [&::-webkit-scrollbar-thumb]:bg-muted-foreground/40 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-muted-foreground/60">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pr-2">
           {logFiles.map((logFile, index) => (
             <Card key={index} className="card-enhanced">
               <CardHeader className="pb-3">
@@ -125,7 +125,7 @@ const LogManagementOverview = () => {
             </Card>
           ))}
         </div>
-      </ScrollArea>
+      </div>
     </div>
   );
 };
