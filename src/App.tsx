@@ -13,6 +13,7 @@ import NotFound from "./pages/NotFound";
 import SqlMonitoring from "./pages/SqlMonitoring";
 import SqlLogManagement from "./pages/SqlLogManagement";
 import SqlCostThresholdParallelism from "./pages/SqlCostThresholdParallelism";
+import Layout from "./components/Layout";
 
 const queryClient = new QueryClient();
 
@@ -23,15 +24,23 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/backup-items" element={<BackupItems />} />
-          <Route path="/recovery-vaults" element={<RecoveryVaults />} />
-          <Route path="/inactive-vms" element={<InactiveVMs />} />
-          <Route path="/vm-cpu-usage" element={<VMCpuUsage />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/sql-monitoring" element={<SqlMonitoring />} />
-          <Route path="/sql-monitoring/log-management" element={<SqlLogManagement />} />
-          <Route path="/sql-monitoring/cost-threshold-parallelism" element={<SqlCostThresholdParallelism />} />
+          <Route element={<Layout />}>
+            <Route path="/" element={<Index />} />
+            <Route path="/backup-items" element={<BackupItems />} />
+            <Route path="/recovery-vaults" element={<RecoveryVaults />} />
+            <Route path="/inactive-vms" element={<InactiveVMs />} />
+            <Route path="/vm-cpu-usage" element={<VMCpuUsage />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/sql-monitoring" element={<SqlMonitoring />} />
+            <Route
+              path="/sql-monitoring/log-management"
+              element={<SqlLogManagement />}
+            />
+            <Route
+              path="/sql-monitoring/cost-threshold-parallelism"
+              element={<SqlCostThresholdParallelism />}
+            />
+          </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

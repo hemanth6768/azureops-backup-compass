@@ -51,21 +51,55 @@ All colors MUST be HSL. Enhanced visual hierarchy and contrast.
     --ring: 217 91% 60%;
 
     /* Glassmorphism gradients with subtle transparency */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary) / 0.9), hsl(var(--primary) / 0.8));
-    --gradient-card: linear-gradient(145deg, hsl(var(--card) / 0.95), hsl(var(--muted) / 0.8));
-    --gradient-success: linear-gradient(135deg, hsl(142 76% 50% / 0.9), hsl(152 86% 60% / 0.8));
-    --gradient-warning: linear-gradient(135deg, hsl(38 92% 50% / 0.9), hsl(45 100% 60% / 0.8));
-    --gradient-error: linear-gradient(135deg, hsl(0 84% 60% / 0.9), hsl(10 90% 70% / 0.8));
-    --gradient-sidebar: linear-gradient(180deg, hsl(220 13% 10% / 0.95), hsl(220 13% 12% / 0.9));
-    --gradient-table-header: linear-gradient(90deg, hsl(217 91% 60% / 0.8), hsl(237 100% 70% / 0.7));
+    --gradient-primary: linear-gradient(
+      135deg,
+      hsl(var(--primary) / 0.9),
+      hsl(var(--primary) / 0.8)
+    );
+    --gradient-card: linear-gradient(
+      145deg,
+      hsl(var(--card) / 0.95),
+      hsl(var(--muted) / 0.8)
+    );
+    --gradient-success: linear-gradient(
+      135deg,
+      hsl(142 76% 50% / 0.9),
+      hsl(152 86% 60% / 0.8)
+    );
+    --gradient-warning: linear-gradient(
+      135deg,
+      hsl(38 92% 50% / 0.9),
+      hsl(45 100% 60% / 0.8)
+    );
+    --gradient-error: linear-gradient(
+      135deg,
+      hsl(0 84% 60% / 0.9),
+      hsl(10 90% 70% / 0.8)
+    );
+    --gradient-sidebar: linear-gradient(
+      180deg,
+      hsl(220 13% 10% / 0.95),
+      hsl(220 13% 12% / 0.9)
+    );
+    --gradient-table-header: linear-gradient(
+      90deg,
+      hsl(217 91% 60% / 0.8),
+      hsl(237 100% 70% / 0.7)
+    );
 
     /* Modern glass shadows with depth */
-    --shadow-card: 0 8px 32px hsl(220 13% 5% / 0.3), 0 1px 1px hsl(220 13% 100% / 0.05) inset;
-    --shadow-hover: 0 20px 60px hsl(217 91% 60% / 0.15), 0 8px 32px hsl(220 13% 5% / 0.4);
-    --shadow-focus: 0 0 0 2px hsl(217 91% 60% / 0.4), 0 0 20px hsl(217 91% 60% / 0.3);
-    --shadow-sidebar: 4px 0 24px hsl(220 13% 5% / 0.2), 1px 0 1px hsl(220 13% 100% / 0.05) inset;
-    --shadow-table: 0 4px 16px hsl(220 13% 5% / 0.2), 0 1px 1px hsl(220 13% 100% / 0.05) inset;
-    --shadow-elevated: 0 16px 64px hsl(220 13% 5% / 0.4), 0 4px 16px hsl(217 91% 60% / 0.1);
+    --shadow-card: 0 8px 32px hsl(220 13% 5% / 0.3),
+      0 1px 1px hsl(220 13% 100% / 0.05) inset;
+    --shadow-hover: 0 20px 60px hsl(217 91% 60% / 0.15),
+      0 8px 32px hsl(220 13% 5% / 0.4);
+    --shadow-focus: 0 0 0 2px hsl(217 91% 60% / 0.4),
+      0 0 20px hsl(217 91% 60% / 0.3);
+    --shadow-sidebar: 4px 0 24px hsl(220 13% 5% / 0.2),
+      1px 0 1px hsl(220 13% 100% / 0.05) inset;
+    --shadow-table: 0 4px 16px hsl(220 13% 5% / 0.2),
+      0 1px 1px hsl(220 13% 100% / 0.05) inset;
+    --shadow-elevated: 0 16px 64px hsl(220 13% 5% / 0.4),
+      0 4px 16px hsl(217 91% 60% / 0.1);
 
     --radius: 1rem;
 
@@ -140,22 +174,44 @@ All colors MUST be HSL. Enhanced visual hierarchy and contrast.
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
-    background-image: 
-      radial-gradient(circle at 20% 80%, hsl(217 91% 60% / 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, hsl(142 76% 50% / 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 40% 40%, hsl(38 92% 50% / 0.05) 0%, transparent 50%);
+    background-image: radial-gradient(
+        circle at 20% 80%,
+        hsl(217 91% 60% / 0.1) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 80% 20%,
+        hsl(142 76% 50% / 0.1) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 40% 40%,
+        hsl(38 92% 50% / 0.05) 0%,
+        transparent 50%
+      );
     background-attachment: fixed;
   }
 
   /* Enhanced typography with better hierarchy */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply tracking-tight font-medium;
     text-shadow: 0 1px 2px hsl(220 13% 5% / 0.1);
   }
 
-  h1 { @apply text-3xl font-bold; }
-  h2 { @apply text-2xl font-semibold; }
-  h3 { @apply text-xl font-medium; }
+  h1 {
+    @apply text-3xl font-bold;
+  }
+  h2 {
+    @apply text-2xl font-semibold;
+  }
+  h3 {
+    @apply text-xl font-medium;
+  }
 
   /* Smooth scrolling and glass effects */
   html {
@@ -200,7 +256,11 @@ All colors MUST be HSL. Enhanced visual hierarchy and contrast.
   }
 
   .table-header-enhanced {
-    background: linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--muted)/0.8) 100%);
+    background: linear-gradient(
+      135deg,
+      hsl(var(--muted)) 0%,
+      hsl(var(--muted) / 0.8) 100%
+    );
     @apply glass-effect;
     @apply text-foreground font-semibold text-sm;
     @apply border-b border-border/50;
@@ -241,7 +301,7 @@ All colors MUST be HSL. Enhanced visual hierarchy and contrast.
 
   /* Premium glass morphism card styling */
   .card-enhanced {
-    @apply bg-gradient-card glass-effect shadow-card hover:shadow-elevated;
+    @apply bg-gradient-card glass-effect shadow-card;
     @apply transition-all duration-300 ease-out hover:scale-[1.02];
     @apply border border-border/30 rounded-xl backdrop-blur-md;
     @apply hover:border-primary/20;
@@ -269,17 +329,24 @@ All colors MUST be HSL. Enhanced visual hierarchy and contrast.
 
   /* Animated gradient backgrounds */
   .hero-gradient {
-    background: linear-gradient(135deg, 
-      hsl(217 91% 60%) 0%, 
-      hsl(237 100% 70%) 50%, 
-      hsl(217 91% 60%) 100%);
+    background: linear-gradient(
+      135deg,
+      hsl(217 91% 60%) 0%,
+      hsl(237 100% 70%) 50%,
+      hsl(217 91% 60%) 100%
+    );
     background-size: 200% 200%;
     animation: gradientShift 6s ease infinite;
   }
 
   @keyframes gradientShift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
   }
 
   /* Subtle pulse animation for interactive elements */
@@ -288,7 +355,11 @@ All colors MUST be HSL. Enhanced visual hierarchy and contrast.
   }
 
   @keyframes pulseGlow {
-    from { box-shadow: 0 0 20px hsl(217 91% 60% / 0.2); }
-    to { box-shadow: 0 0 30px hsl(217 91% 60% / 0.4); }
+    from {
+      box-shadow: 0 0 20px hsl(217 91% 60% / 0.2);
+    }
+    to {
+      box-shadow: 0 0 30px hsl(217 91% 60% / 0.4);
+    }
   }
 }

@@ -1,23 +1,40 @@
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Search, Download, RefreshCw, Database } from 'lucide-react';
-import { api, RecoveryVault } from '@/lib/api';
-import { useToast } from '@/hooks/use-toast';
-import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
-import { AppSidebar } from '@/components/AppSidebar';
-import BackButton from '@/components/BackButton';
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Search, Download, RefreshCw, Database } from "lucide-react";
+import { api, RecoveryVault } from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
+import {
+  SidebarProvider,
+  SidebarTrigger,
+  SidebarInset,
+} from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
+import BackButton from "@/components/BackButton";
 
 const RecoveryVaults = () => {
   const [vaults, setVaults] = useState<RecoveryVault[]>([]);
   const [filteredVaults, setFilteredVaults] = useState<RecoveryVault[]>([]);
   const [subscriptions, setSubscriptions] = useState<string[]>([]);
-  const [selectedSubscription, setSelectedSubscription] = useState('all');
+  const [selectedSubscription, setSelectedSubscription] = useState("all");
   const [isLoading, setIsLoading] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
 
   useEffect(() => {
@@ -36,7 +53,8 @@ const RecoveryVaults = () => {
       setSubscriptions(subscriptionsData);
       await loadVaults();
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load data';
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to load data";
       toast({
         title: "Error",
         description: errorMessage,
@@ -52,7 +70,8 @@ const RecoveryVaults = () => {
       const data = await api.getRecoveryVaults();
       setVaults(data);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load recovery vaults';
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to load recovery vaults";
       toast({
         title: "Error",
         description: errorMessage,
@@ -65,22 +84,25 @@ const RecoveryVaults = () => {
 
   const filterVaults = () => {
     let filtered = vaults;
-    
+
     // Filter by subscription if not "all"
-    if (selectedSubscription !== 'all') {
-      filtered = filtered.filter(vault => 
-        vault.subscriptionName === selectedSubscription
+    if (selectedSubscription !== "all") {
+      filtered = filtered.filter(
+        (vault) => vault.subscriptionName === selectedSubscription
       );
     }
-    
+
     // Filter by search term
-    filtered = filtered.filter(vault => 
-      vault.vaultName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      vault.subscriptionName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      vault.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      vault.resourceGroupName.toLowerCase().includes(searchTerm.toLowerCase())
+    filtered = filtered.filter(
+      (vault) =>
+        vault.vaultName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        vault.subscriptionName
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        vault.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        vault.resourceGroupName.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    
+
     setFilteredVaults(filtered);
   };
 
@@ -90,57 +112,62 @@ const RecoveryVaults = () => {
 
   const exportToCSV = () => {
     const headers = [
-      'Vault Name',
-      'Subscription',
-      'Resource Group',
-      'Location'
+      "Vault Name",
+      "Subscription",
+      "Resource Group",
+      "Location",
     ];
 
     const csvContent = [
-      headers.join(','),
-      ...filteredVaults.map(vault => [
-        vault.vaultName,
-        vault.subscriptionName,
-        vault.resourceGroupName,
-        vault.location
-      ].join(','))
-    ].join('\n');
+      headers.join(","),
+      ...filteredVaults.map((vault) =>
+        [
+          vault.vaultName,
+          vault.subscriptionName,
+          vault.resourceGroupName,
+          vault.location,
+        ].join(",")
+      ),
+    ].join("\n");
 
-    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const blob = new Blob([csvContent], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = 'recovery-vaults.csv';
+    a.download = "recovery-vaults.csv";
     a.click();
     window.URL.revokeObjectURL(url);
   };
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
-        <AppSidebar />
-        <SidebarInset className="flex-1">
-          {/* Header with sidebar trigger */}
-          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-            <SidebarTrigger className="-ml-1" />
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-                <Database className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <h1 className="text-lg font-semibold">Recovery Vaults</h1>
-                <p className="text-xs text-muted-foreground">Azure Recovery Service Vaults</p>
-              </div>
-            </div>
-            <div className="ml-auto">
-              <BackButton to="/" label="Back to Dashboard" />
-            </div>
-          </header>
-      
+    <>
+      {/* Header with sidebar trigger */}
+      <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+        <SidebarTrigger className="-ml-1" />
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+            <Database className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-lg font-semibold">Recovery Vaults</h1>
+            <p className="text-xs text-muted-foreground">
+              Azure Recovery Service Vaults
+            </p>
+          </div>
+        </div>
+        <div className="ml-auto">
+          <BackButton to="/" label="Back to Dashboard" />
+        </div>
+      </header>
+
       <main className="flex-1 space-y-4 p-4 md:p-6 lg:p-8">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-foreground">Recovery Vaults</h1>
-          <p className="text-muted-foreground mt-2">Manage and monitor Azure Recovery Service Vaults</p>
+          <h1 className="text-3xl font-bold text-foreground">
+            Recovery Vaults
+          </h1>
+          <p className="text-muted-foreground mt-2">
+            Manage and monitor Azure Recovery Service Vaults
+          </p>
         </div>
 
         <Card>
@@ -152,16 +179,21 @@ const RecoveryVaults = () => {
                   ({filteredVaults.length} vaults)
                 </span>
               </CardTitle>
-              
+
               <div className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
-                <Select value={selectedSubscription} onValueChange={setSelectedSubscription}>
+                <Select
+                  value={selectedSubscription}
+                  onValueChange={setSelectedSubscription}
+                >
                   <SelectTrigger className="w-full sm:w-48">
                     <SelectValue placeholder="Filter by subscription" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Subscriptions</SelectItem>
                     {subscriptions.map((sub) => (
-                      <SelectItem key={sub} value={sub}>{sub}</SelectItem>
+                      <SelectItem key={sub} value={sub}>
+                        {sub}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -175,14 +207,22 @@ const RecoveryVaults = () => {
                     className="pl-10 w-full sm:w-64"
                   />
                 </div>
-                
-                <Button variant="outline" onClick={handleRefresh} disabled={isLoading}>
-                  <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+
+                <Button
+                  variant="outline"
+                  onClick={handleRefresh}
+                  disabled={isLoading}
+                >
+                  <RefreshCw
+                    className={`w-4 h-4 mr-2 ${
+                      isLoading ? "animate-spin" : ""
+                    }`}
+                  />
                   Refresh
                 </Button>
-                
-                <Button 
-                  variant="outline" 
+
+                <Button
+                  variant="outline"
                   onClick={exportToCSV}
                   disabled={filteredVaults.length === 0}
                 >
@@ -192,35 +232,44 @@ const RecoveryVaults = () => {
               </div>
             </div>
           </CardHeader>
-          
+
           <CardContent>
             {isLoading ? (
               <div className="text-center py-8">Loading recovery vaults...</div>
             ) : (
               <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>ID</TableHead>
-                        <TableHead>Vault Name</TableHead>
-                        <TableHead>Subscription</TableHead>
-                        <TableHead>Resource Group</TableHead>
-                        <TableHead>Location</TableHead>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>ID</TableHead>
+                      <TableHead>Vault Name</TableHead>
+                      <TableHead>Subscription</TableHead>
+                      <TableHead>Resource Group</TableHead>
+                      <TableHead>Location</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredVaults.map((vault, index) => (
+                      <TableRow key={index}>
+                        <TableCell className="text-muted-foreground font-bold">
+                          {index + 1}
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          {vault.vaultName}
+                        </TableCell>
+                        <TableCell>{vault.subscriptionName}</TableCell>
+                        <TableCell>{vault.resourceGroupName}</TableCell>
+                        <TableCell className="capitalize">
+                          {vault.location}
+                        </TableCell>
                       </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredVaults.map((vault, index) => (
-                        <TableRow key={index}>
-                          <TableCell className="text-muted-foreground font-bold">{index + 1}</TableCell>
-                          <TableCell className="font-medium">{vault.vaultName}</TableCell>
-                          <TableCell>{vault.subscriptionName}</TableCell>
-                          <TableCell>{vault.resourceGroupName}</TableCell>
-                          <TableCell className="capitalize">{vault.location}</TableCell>
-                        </TableRow>
-                      ))}
+                    ))}
                     {filteredVaults.length === 0 && !isLoading && (
                       <TableRow>
-                        <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                        <TableCell
+                          colSpan={5}
+                          className="text-center py-8 text-muted-foreground"
+                        >
                           No recovery vaults found
                         </TableCell>
                       </TableRow>
@@ -231,10 +280,8 @@ const RecoveryVaults = () => {
             )}
           </CardContent>
         </Card>
-          </main>
-        </SidebarInset>
-      </div>
-    </SidebarProvider>
+      </main>
+    </>
   );
 };
 
