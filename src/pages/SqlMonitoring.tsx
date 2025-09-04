@@ -7,7 +7,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import LogManagementOverview from "@/components/LogManagementOverview";
 import DatabaseSizePanel from "@/components/DatabaseSizePanel";
 import StatCard from "@/components/StatCard";
-import { Database, FileText, Sliders, Search } from "lucide-react";
+import { Database, FileText, Sliders, Search, HardDrive } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -49,7 +49,7 @@ const SqlMonitoring = () => {
 
         <DatabaseSizePanel />
 
-        <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard
             title="Log Management"
             value="Open"
@@ -75,6 +75,14 @@ const SqlMonitoring = () => {
             icon={Search}
             clickable
             onClick={() => navigate("/sql-monitoring/query-analysis")}
+          />
+          <StatCard
+            title="SQL Server Backup Details"
+            value="Open"
+            description="Database backup monitoring and schedules"
+            icon={HardDrive}
+            clickable
+            onClick={() => navigate("/sql-monitoring/backup-details")}
           />
         </section>
       </main>

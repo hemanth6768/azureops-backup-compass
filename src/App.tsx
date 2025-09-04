@@ -14,6 +14,7 @@ import SqlMonitoring from "./pages/SqlMonitoring";
 import SqlLogManagement from "./pages/SqlLogManagement";
 import SqlCostThresholdParallelism from "./pages/SqlCostThresholdParallelism";
 import SqlQueryAnalysis from "./pages/SqlQueryAnalysis";
+import SqlBackupDetails from "./pages/SqlBackupDetails";
 import Layout from "./components/Layout";
 
 const queryClient = new QueryClient();
@@ -44,6 +45,10 @@ const App = () => (
             <Route
               path="/sql-monitoring/query-analysis"
               element={<SqlQueryAnalysis />}
+            />
+            <Route
+              path="/sql-monitoring/backup-details"
+              element={<SqlBackupDetails />}
             />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

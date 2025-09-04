@@ -117,6 +117,23 @@ export interface QueryAnalysisResponse {
   records: QueryAnalysisRecord[];
 }
 
+export interface BackupRecord {
+  serverName: string;
+  databaseName: string;
+  backupType: string;
+  backupStartDate: string;
+  backupFinishDate: string;
+  durationMinutes: number;
+  backupLocation: string;
+  storageAccount: string;
+  container: string;
+  notes: string;
+}
+
+export interface BackupCollectionResponse {
+  backups: BackupRecord[];
+}
+
 interface VaultSummaryResponse {
   totalResourceGroups: number;
   locationStats: Array<{
@@ -288,6 +305,14 @@ export const api = {
     const response = await fetch(`${API_BASE_URL}/api/Database/${encodeURIComponent(serverName)}`);
     if (!response.ok) {
       throw new Error(`Failed to fetch query analysis for server: ${serverName}`);
+    }
+    return response.json();
+  },
+
+  async getBackupCollection(): Promise<BackupCollectionResponse> {
+    const response = await fetch(`${API_BASE_URL}/api/BackupUpload/collect`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch backup collection data');
     }
     return response.json();
   },
