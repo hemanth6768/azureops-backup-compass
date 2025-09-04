@@ -7,7 +7,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import LogManagementOverview from "@/components/LogManagementOverview";
 import DatabaseSizePanel from "@/components/DatabaseSizePanel";
 import StatCard from "@/components/StatCard";
-import { Database, FileText, Sliders } from "lucide-react";
+import { Database, FileText, Sliders, Search } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -67,6 +67,14 @@ const SqlMonitoring = () => {
             onClick={() =>
               navigate("/sql-monitoring/cost-threshold-parallelism")
             }
+          />
+          <StatCard
+            title="Query Analysis"
+            value="Open"
+            description="Monitor query execution and performance"
+            icon={Search}
+            clickable
+            onClick={() => navigate("/sql-monitoring/query-analysis")}
           />
         </section>
       </main>

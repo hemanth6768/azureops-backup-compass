@@ -81,6 +81,42 @@ export interface DatabaseSize {
   size: string;
 }
 
+export interface QueryAnalysisRecord {
+  "dd hh:mm:ss.mss": string;
+  session_id: number;
+  sql_text: string;
+  sql_command: object;
+  login_name: string;
+  wait_info: string;
+  tran_log_writes: object;
+  CPU: object;
+  tempdb_allocations: string;
+  tempdb_current: string;
+  blocking_session_id: object;
+  reads: object;
+  writes: object;
+  physical_reads: object;
+  query_plan: object;
+  used_memory: string;
+  status: string;
+  tran_start_time: object;
+  implicit_tran: object;
+  open_tran_count: string;
+  percent_complete: object;
+  host_name: string;
+  database_name: string;
+  program_name: string;
+  start_time: string;
+  login_time: string;
+  request_id: number;
+  collection_time: string;
+}
+
+export interface QueryAnalysisResponse {
+  server: string;
+  records: QueryAnalysisRecord[];
+}
+
 interface VaultSummaryResponse {
   totalResourceGroups: number;
   locationStats: Array<{
@@ -244,6 +280,14 @@ export const api = {
     );
     if (!response.ok) {
       throw new Error(`Failed to fetch ${fileType} files for server: ${serverName}`);
+    }
+    return response.json();
+  },
+
+  async getQueryAnalysis(serverName: string): Promise<QueryAnalysisResponse> {
+    const response = await fetch(`${API_BASE_URL}/api/Database/${encodeURIComponent(serverName)}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch query analysis for server: ${serverName}`);
     }
     return response.json();
   },

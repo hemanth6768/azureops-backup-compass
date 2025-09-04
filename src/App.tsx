@@ -13,6 +13,7 @@ import NotFound from "./pages/NotFound";
 import SqlMonitoring from "./pages/SqlMonitoring";
 import SqlLogManagement from "./pages/SqlLogManagement";
 import SqlCostThresholdParallelism from "./pages/SqlCostThresholdParallelism";
+import SqlQueryAnalysis from "./pages/SqlQueryAnalysis";
 import Layout from "./components/Layout";
 
 const queryClient = new QueryClient();
@@ -39,6 +40,10 @@ const App = () => (
             <Route
               path="/sql-monitoring/cost-threshold-parallelism"
               element={<SqlCostThresholdParallelism />}
+            />
+            <Route
+              path="/sql-monitoring/query-analysis"
+              element={<SqlQueryAnalysis />}
             />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
