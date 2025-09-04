@@ -28,7 +28,7 @@ const SqlBackupDetails = () => {
       const response = await api.getBackupCollection();
       let filteredData = response.backups || [];
       
-      if (selectedServer) {
+      if (selectedServer && selectedServer !== "all") {
         filteredData = filteredData.filter(backup => 
           backup.serverName.toLowerCase().includes(selectedServer.toLowerCase())
         );
@@ -121,7 +121,7 @@ const SqlBackupDetails = () => {
                   <SelectValue placeholder={serversLoading ? "Loading servers..." : "Select SQL Server (HOST-SQL)"} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Servers</SelectItem>
+                  <SelectItem value="all">All Servers</SelectItem>
                   {servers.map((s) => (
                     <SelectItem key={s.serverName} value={s.serverName}>
                       {s.serverName}
