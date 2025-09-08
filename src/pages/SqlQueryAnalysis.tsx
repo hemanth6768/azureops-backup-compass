@@ -71,6 +71,24 @@ const SqlQueryAnalysis = () => {
     return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
   };
 
+  const formatValue = (value: any): string => {
+    if (value === null || value === undefined || value === "") return "—";
+    if (typeof value === "object") {
+      if (Object.keys(value).length === 0) return "—";
+      return JSON.stringify(value);
+    }
+    return String(value);
+  };
+
+  const formatDateTime = (dateString: string) => {
+    if (!dateString) return "—";
+    try {
+      return new Date(dateString).toLocaleString();
+    } catch {
+      return "—";
+    }
+  };
+
   const lastCaptured = useMemo(() => {
     if (!data.length) return undefined;
     const latest = data.reduce((acc: number, cur) => {
@@ -171,7 +189,7 @@ const SqlQueryAnalysis = () => {
                   {data.map((row, idx) => (
                     <TableRow key={`${row.session_id}-${idx}`}>
                       <TableCell className="text-left">{selectedServer}</TableCell>
-                      <TableCell className="text-left">{row["dd hh:mm:ss.mss"] || "—"}</TableCell>
+                      <TableCell className="text-left">{formatValue(row["dd hh:mm:ss.mss"])}</TableCell>
                       <TableCell className="text-left">
                         {row.sql_text ? (
                           <Tooltip>
@@ -186,16 +204,12 @@ const SqlQueryAnalysis = () => {
                           "—"
                         )}
                       </TableCell>
-                      <TableCell className="text-left">{row.login_name || "—"}</TableCell>
-                      <TableCell className="text-left">{row.host_name || "—"}</TableCell>
-                      <TableCell className="text-left">{row.database_name || "—"}</TableCell>
-                      <TableCell className="text-left">{row.program_name || "—"}</TableCell>
-                      <TableCell className="text-left">
-                        {row.login_time ? new Date(row.login_time).toLocaleString() : "—"}
-                      </TableCell>
-                      <TableCell className="text-left">
-                        {row.start_time ? new Date(row.start_time).toLocaleString() : "—"}
-                      </TableCell>
+                      <TableCell className="text-left">{formatValue(row.login_name)}</TableCell>
+                      <TableCell className="text-left">{formatValue(row.host_name)}</TableCell>
+                      <TableCell className="text-left">{formatValue(row.database_name)}</TableCell>
+                      <TableCell className="text-left">{formatValue(row.program_name)}</TableCell>
+                      <TableCell className="text-left">{formatDateTime(row.login_time)}</TableCell>
+                      <TableCell className="text-left">{formatDateTime(row.start_time)}</TableCell>
                     </TableRow>
                   ))}
                 </TooltipProvider>
