@@ -28,8 +28,10 @@ const SqlQueryAnalysis = () => {
     try {
       setLoading(true);
       const response = await api.getQueryAnalysis(selectedServer);
+      console.log('Query Analysis API Response:', response);
       setData(response.records || []);
     } catch (error: any) {
+      console.error('Query Analysis API Error:', error);
       toast({
         title: "Failed to load query analysis",
         description: error?.message ?? "Unknown error",
