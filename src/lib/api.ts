@@ -141,6 +141,14 @@ interface VaultSummaryResponse {
     vaultCount: number;
   }>;
 }
+
+export interface CostParallelismSetting {
+  serverName: string;
+  settingName: string;
+  configuredValue: number;
+  runningValue: number;
+}
+
 export const api = {
   async getVaultSummary(subscriptionName?: string): Promise<VaultSummaryResponse> {
     const url = subscriptionName 
@@ -315,5 +323,13 @@ export const api = {
       throw new Error('Failed to fetch backup collection data');
     }
     return response.json();
+  },
+
+  async getCostParallelism(): Promise<CostParallelismSetting[]> {
+    const response = await fetch(`${API_BASE_URL}/api/Monitoring/costParallelism`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch cost parallelism settings');
+    }
+     return response.json();
   },
 };
