@@ -74,9 +74,14 @@ const SqlQueryAnalysis = () => {
   const formatValue = (value: any): string => {
     if (value === null || value === undefined || value === "") return "—";
     if (typeof value === "object") {
+      // Handle empty objects or arrays
+      if (Array.isArray(value)) {
+        return value.length === 0 ? "—" : JSON.stringify(value);
+      }
       if (Object.keys(value).length === 0) return "—";
       return JSON.stringify(value);
     }
+    if (typeof value === "boolean") return value ? "Yes" : "No";
     return String(value);
   };
 
