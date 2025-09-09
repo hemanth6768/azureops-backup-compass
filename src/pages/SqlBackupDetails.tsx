@@ -13,6 +13,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 const SqlBackupDetails = () => {
   const { toast } = useToast();
   const [data, setData] = useState<BackupRecord[]>([]);
+  const [filteredData, setFilteredData] = useState<BackupRecord[]>([]);
   const [loading, setLoading] = useState(false);
   const [servers, setServers] = useState<SqlServerHost[]>([]);
   const [selectedServer, setSelectedServer] = useState<string>("");
@@ -20,6 +21,9 @@ const SqlBackupDetails = () => {
   const [activeTab, setActiveTab] = useState<"backups" | "schedules">("backups");
   const [selectedDays, setSelectedDays] = useState<string>("1");
   const [customDays, setCustomDays] = useState<string>("");
+  const [serverNameSearch, setServerNameSearch] = useState<string>("");
+  const [databaseNameSearch, setDatabaseNameSearch] = useState<string>("");
+  const [backupTypeFilter, setBackupTypeFilter] = useState<string>("all");
 
   useEffect(() => {
     document.title = "SQL Server Backup Details | SQL Server Monitoring | AzureOps";
@@ -72,6 +76,31 @@ const SqlBackupDetails = () => {
     }
   }, [fetchData]);
 
+  // Filter data based on search and filter criteria
+  useEffect(() => {
+    let filtered = data;
+
+    if (serverNameSearch) {
+      filtered = filtered.filter(item => 
+        item.serverName?.toLowerCase().includes(serverNameSearch.toLowerCase())
+      );
+    }
+
+    if (databaseNameSearch) {
+      filtered = filtered.filter(item => 
+        item.databaseName?.toLowerCase().includes(databaseNameSearch.toLowerCase())
+      );
+    }
+
+    if (backupTypeFilter !== "all") {
+      filtered = filtered.filter(item => 
+        item.backupType?.toLowerCase() === backupTypeFilter.toLowerCase()
+      );
+    }
+
+    setFilteredData(filtered);
+  }, [data, serverNameSearch, databaseNameSearch, backupTypeFilter]);
+
   const truncateText = (text: string, maxLength: number = 40) => {
     if (!text) return "—";
     return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
@@ -114,8 +143,8 @@ const SqlBackupDetails = () => {
           </p>
         </div>
 
-        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <div className="flex gap-3 items-end">
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3 md:flex-row md:items-end">
             <div className="min-w-[220px]">
               <label className="block text-xs text-muted-foreground mb-1">SQL Server</label>
               <Select value={selectedServer} onValueChange={(v) => setSelectedServer(v)}>
@@ -162,31 +191,58 @@ const SqlBackupDetails = () => {
                 />
               </div>
             )}
-            
-            <Button 
-              onClick={fetchData} 
-              disabled={loading || !selectedServer || (selectedDays === "custom" && !customDays)}
-              className="mb-0"
-            >
-              {loading ? "Loading..." : "Load Backups"}
-            </Button>
+
+            <div className="flex gap-2 ml-auto">
+              <Button
+                variant={activeTab === "backups" ? "default" : "outline"}
+                onClick={() => setActiveTab("backups")}
+                size="sm"
+              >
+                Backups
+              </Button>
+              <Button
+                variant={activeTab === "schedules" ? "default" : "outline"}
+                onClick={() => setActiveTab("schedules")}
+                size="sm"
+              >
+                Schedules
+              </Button>
+            </div>
           </div>
 
-          <div className="flex gap-2">
-            <Button
-              variant={activeTab === "backups" ? "default" : "outline"}
-              onClick={() => setActiveTab("backups")}
-              size="sm"
-            >
-              Backups
-            </Button>
-            <Button
-              variant={activeTab === "schedules" ? "default" : "outline"}
-              onClick={() => setActiveTab("schedules")}
-              size="sm"
-            >
-              Schedules
-            </Button>
+          {/* Search and Filter Row */}
+          <div className="flex flex-col gap-3 md:flex-row md:items-end">
+            <div className="min-w-[200px]">
+              <label className="block text-xs text-muted-foreground mb-1">Search Server Name</label>
+              <Input
+                placeholder="Filter by server name..."
+                value={serverNameSearch}
+                onChange={(e) => setServerNameSearch(e.target.value)}
+              />
+            </div>
+
+            <div className="min-w-[200px]">
+              <label className="block text-xs text-muted-foreground mb-1">Search Database Name</label>
+              <Input
+                placeholder="Filter by database name..."
+                value={databaseNameSearch}
+                onChange={(e) => setDatabaseNameSearch(e.target.value)}
+              />
+            </div>
+
+            <div className="min-w-[150px]">
+              <label className="block text-xs text-muted-foreground mb-1">Backup Type</label>
+              <Select value={backupTypeFilter} onValueChange={(v) => setBackupTypeFilter(v)}>
+                <SelectTrigger aria-label="Filter by backup type">
+                  <SelectValue placeholder="All Types" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="full">Full</SelectItem>
+                  <SelectItem value="log">Log</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
 
@@ -223,9 +279,9 @@ const SqlBackupDetails = () => {
                       <TableCell className="text-left">—</TableCell>
                     </TableRow>
                   ))
-                ) : data.length ? (
+                ) : filteredData.length ? (
                   <TooltipProvider>
-                    {data.map((row, idx) => (
+                    {filteredData.map((row, idx) => (
                       <TableRow key={`${row.serverName}-${row.databaseName}-${idx}`}>
                         <TableCell className="text-left">{row.serverName || "—"}</TableCell>
                         <TableCell className="text-left">{row.databaseName || "—"}</TableCell>
