@@ -3,10 +3,11 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import BackButton from "@/components/BackButton";
 import { useToast } from "@/components/ui/use-toast";
 import { api, SqlServerHost, BackupRecord } from "@/lib/api";
-import { Database } from "lucide-react";
+import { Database, Calendar } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const SqlBackupDetails = () => {
@@ -17,24 +18,23 @@ const SqlBackupDetails = () => {
   const [selectedServer, setSelectedServer] = useState<string>("");
   const [serversLoading, setServersLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<"backups" | "schedules">("backups");
+  const [selectedDays, setSelectedDays] = useState<string>("1");
+  const [customDays, setCustomDays] = useState<string>("");
 
   useEffect(() => {
     document.title = "SQL Server Backup Details | SQL Server Monitoring | AzureOps";
   }, []);
 
   const fetchData = useCallback(async () => {
+    if (!selectedServer) return;
+    
     try {
       setLoading(true);
-      const response = await api.getBackupCollection();
-      let filteredData = response.backups || [];
+      const days = selectedDays === "custom" ? parseInt(customDays) || 1 : parseInt(selectedDays);
+      const serverNames = selectedServer === "all" ? servers.map(s => s.serverName) : [selectedServer];
       
-      if (selectedServer && selectedServer !== "all") {
-        filteredData = filteredData.filter(backup => 
-          backup.serverName.toLowerCase().includes(selectedServer.toLowerCase())
-        );
-      }
-      
-      setData(filteredData);
+      const response = await api.getBackupCollectionByDays(serverNames, days);
+      setData(response.backups || []);
     } catch (error: any) {
       toast({
         title: "Failed to load backup details",
@@ -44,7 +44,7 @@ const SqlBackupDetails = () => {
     } finally {
       setLoading(false);
     }
-  }, [selectedServer, toast]);
+  }, [selectedServer, selectedDays, customDays, servers, toast]);
 
   useEffect(() => {
     const loadServers = async () => {
@@ -67,7 +67,9 @@ const SqlBackupDetails = () => {
   }, []);
 
   useEffect(() => {
-    fetchData();
+    if (selectedServer && servers.length > 0) {
+      fetchData();
+    }
   }, [fetchData]);
 
   const truncateText = (text: string, maxLength: number = 40) => {
@@ -113,7 +115,7 @@ const SqlBackupDetails = () => {
         </div>
 
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-3 items-end">
             <div className="min-w-[220px]">
               <label className="block text-xs text-muted-foreground mb-1">SQL Server</label>
               <Select value={selectedServer} onValueChange={(v) => setSelectedServer(v)}>
@@ -130,6 +132,44 @@ const SqlBackupDetails = () => {
                 </SelectContent>
               </Select>
             </div>
+            
+            <div className="min-w-[150px]">
+              <label className="block text-xs text-muted-foreground mb-1">History Days</label>
+              <Select value={selectedDays} onValueChange={(v) => setSelectedDays(v)}>
+                <SelectTrigger aria-label="Select Days">
+                  <SelectValue placeholder="Select Days" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">1 Day</SelectItem>
+                  <SelectItem value="2">2 Days</SelectItem>
+                  <SelectItem value="3">3 Days</SelectItem>
+                  <SelectItem value="4">4 Days</SelectItem>
+                  <SelectItem value="custom">Custom</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            {selectedDays === "custom" && (
+              <div className="min-w-[100px]">
+                <label className="block text-xs text-muted-foreground mb-1">Days</label>
+                <Input
+                  type="number"
+                  placeholder="Enter days"
+                  value={customDays}
+                  onChange={(e) => setCustomDays(e.target.value)}
+                  min="1"
+                  max="365"
+                />
+              </div>
+            )}
+            
+            <Button 
+              onClick={fetchData} 
+              disabled={loading || !selectedServer || (selectedDays === "custom" && !customDays)}
+              className="mb-0"
+            >
+              {loading ? "Loading..." : "Load Backups"}
+            </Button>
           </div>
 
           <div className="flex gap-2">

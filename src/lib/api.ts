@@ -325,6 +325,23 @@ export const api = {
     return response.json();
   },
 
+  async getBackupCollectionByDays(serverNames: string[], historyDays: number): Promise<BackupCollectionResponse> {
+    const response = await fetch(`${API_BASE_URL}/api/BackupUpload/collect`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        serverNames,
+        historyDays
+      })
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch backup collection data');
+    }
+    return response.json();
+  },
+
   async getCostParallelism(): Promise<CostParallelismSetting[]> {
     const response = await fetch(`${API_BASE_URL}/api/Monitoring/costParallelism`);
     if (!response.ok) {
