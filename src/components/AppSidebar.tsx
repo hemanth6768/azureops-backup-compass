@@ -16,6 +16,7 @@ import {
 const items = [
   { title: 'AzureOps Dashboard', url: '/', icon: BarChart3 },
   { title: 'SQL Server Monitoring', url: '/sql-monitoring', icon: Server },
+  { title: 'Customer Profiles', url: '/customer-profiles', icon: Database },
   { title: 'Settings', url: '/settings', icon: Settings },
 ];
 

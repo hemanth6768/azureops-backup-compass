@@ -15,6 +15,7 @@ import SqlLogManagement from "./pages/SqlLogManagement";
 import SqlCostThresholdParallelism from "./pages/SqlCostThresholdParallelism";
 import SqlQueryAnalysis from "./pages/SqlQueryAnalysis";
 import SqlBackupDetails from "./pages/SqlBackupDetails";
+import CustomerProfiles from "./pages/CustomerProfiles";
 import Layout from "./components/Layout";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/inactive-vms" element={<InactiveVMs />} />
             <Route path="/vm-cpu-usage" element={<VMCpuUsage />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/customer-profiles" element={<CustomerProfiles />} />
             <Route path="/sql-monitoring" element={<SqlMonitoring />} />
             <Route
               path="/sql-monitoring/log-management"
