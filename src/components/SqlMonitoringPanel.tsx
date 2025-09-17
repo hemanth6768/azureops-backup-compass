@@ -1,6 +1,7 @@
 import React from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import LogManagementFilesTable from "@/components/LogManagementFilesTable";
+import CustomerProfile from "@/components/CustomerProfile";
 
 // SQL Server Monitoring left panel with scalable tab architecture
 // Add future tabs by appending to the panels array below
@@ -10,6 +11,11 @@ const SqlMonitoringPanel: React.FC = () => {
       value: "log-management",
       label: "Log Management",
       content: <LogManagementFilesTable />,
+    },
+    {
+      value: "customer-profile",
+      label: "Customer Profile",
+      content: <CustomerProfile />,
     },
     // Future-ready: add more panels here
     // { value: "capacity", label: "Capacity", content: <CapacityPanel /> },
