@@ -4,7 +4,7 @@ import {
   SidebarInset,
 } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
-import LogManagementFilesTable from "@/components/LogManagementFilesTable";
+import SqlMonitoringPanel from "@/components/SqlMonitoringPanel";
 import { Database, FileText } from "lucide-react";
 import { useEffect } from "react";
 import BackButton from "@/components/BackButton";
@@ -43,7 +43,7 @@ const SqlLogManagement = () => {
           </p>
         </div>
 
-        <LogManagementFilesTable />
+        <SqlMonitoringPanel />
       </main>
     </>
   );
